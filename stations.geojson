@@ -1,0 +1,83 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [-6.818556, 33.993639] },
+      "properties": {
+        "id": "minipark-kamra",
+        "hub": "Mini Park, Youssoufia",
+        "destinations": ["Kamra", "Akwass"],
+        "price_dh": 5,
+        "hours": "day_night",
+        "notes": "Can also go to 'les batiments' if you are a group of 5-6.",
+        "verified": false
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [-6.8175199, 33.9927803] },
+      "properties": {
+        "id": "minipark-centre",
+        "hub": "Mini Park, Youssoufia",
+        "destinations": ["Centre Ville"],
+        "price_dh": 5,
+        "hours": "day_night",
+        "notes": "",
+        "verified": false
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [-6.8177405, 33.9930560] },
+      "properties": {
+        "id": "minipark-agdal",
+        "hub": "Mini Park, Youssoufia",
+        "destinations": ["Agdal", "Masjid Badr"],
+        "price_dh": 5,
+        "hours": "day_night",
+        "notes": "",
+        "verified": false
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [-6.8177294, 33.9922393] },
+      "properties": {
+        "id": "minipark-hayriad",
+        "hub": "Mini Park, Youssoufia",
+        "destinations": ["Hay Riad"],
+        "price_dh": 7,
+        "hours": "day",
+        "notes": "UNSURE: destination might be Temara. Check on site.",
+        "verified": false
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [-6.8320631, 34.0217973] },
+      "properties": {
+        "id": "centre-minipark",
+        "hub": "Centre Ville",
+        "destinations": ["Mini Park", "Takaddoum"],
+        "price_dh": 5,
+        "hours": "day_night",
+        "notes": "",
+        "verified": false
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [-6.8698672, 33.9909898] },
+      "properties": {
+        "id": "kamra-minipark",
+        "hub": "Kamra",
+        "destinations": ["Mini Park", "Chateau", "Mo9ata3a (Takaddoum)"],
+        "price_dh": 5,
+        "hours": "day_night",
+        "notes": "",
+        "verified": false
+      }
+    }
+  ]
+}

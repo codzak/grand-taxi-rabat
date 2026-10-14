@@ -1,0 +1,47 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Grand Taxi Rabat</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <style>
+    html, body, #map { height: 100%; margin: 0; }
+  </style>
+</head>
+<body>
+  <div id="map"></div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script>
+    // 1. Create the map, centered on Rabat (Leaflet uses [lat, lng])
+    const map = L.map('map').setView([34.00, -6.84], 13);
+
+    // 2. Background tiles from OpenStreetMap
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; OpenStreetMap contributors'
+    }).addTo(map);
+
+    // 3. Load your stations and put a pin for each one
+    fetch('stations.geojson')
+      .then(res => res.json())
+      .then(data => {
+        L.geoJSON(data, {
+          onEachFeature: (feature, layer) => {
+            const p = feature.properties;
+            layer.bindPopup(
+              `<b>${p.hub}</b><br>` +
+              `To: ${p.destinations.join(', ')}<br>` +
+              `${p.price_dh} Dh, ${p.hours === 'day' ? 'day only' : 'day and night'}`
+            );
+          }
+        }).addTo(map);
+      });
+
+    // TODO (yours):
+    // - a search box: type a destination, show only stands that go there
+    // - a "Take me there" link in the popup (Google Maps walking directions)
+    // - color the pin grey if verified === false
+  </script>
+</body>
+</html>
