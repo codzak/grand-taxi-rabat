@@ -1,0 +1,39 @@
+# secrets
+.env
+.env.*
+!.env.example
+.dev.vars
+*service-account*.json
+
+# node / expo
+node_modules/
+.expo/
+dist/
+web-build/
+*.tsbuildinfo
+app/android/
+app/ios/
+
+# keys and builds
+*.jks
+*.keystore
+*.p8
+*.p12
+*.mobileprovision
+*.apk
+*.aab
+*.ipa
+
+# latex build files
+*.aux
+*.log
+*.out
+*.toc
+*.fls
+*.fdb_latexmk
+*.xdv
+
+# os / editor
+.DS_Store
+Thumbs.db
+.vscode/

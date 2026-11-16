@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Mode chauffeur, carte et alertes de dépose</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&amp;family=IBM+Plex+Sans:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#7FD1B9;text-decoration:none}a:hover{color:#A8E3D1}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; position: relative; overflow: hidden; background: #0D1513; color: #F2F5F4; font-family: 'IBM Plex Sans', system-ui, sans-serif">
+
+<svg width="390" height="844" viewBox="0 0 390 844" role="img" aria-label="Carte du trajet avec les déposes des passagers" style="position: absolute; left: 0; top: 0">
+<rect width="390" height="844" fill="#131C19"></rect>
+<path d="M-10 230 L400 200" stroke="#22302C" stroke-width="12" fill="none"></path>
+<path d="M-10 470 L400 430" stroke="#22302C" stroke-width="16" fill="none"></path>
+<path d="M-10 640 L400 610" stroke="#22302C" stroke-width="10" fill="none"></path>
+<path d="M110 -10 L150 860" stroke="#22302C" stroke-width="12" fill="none"></path>
+<path d="M290 -10 L320 860" stroke="#22302C" stroke-width="10" fill="none"></path>
+<path d="M60 700 L120 560 L210 470 L270 360 L300 240 L340 120" stroke="#2F6B5C" stroke-width="8" fill="none" stroke-linecap="round" stroke-linejoin="round"></path>
+<path d="{{aheadPath}}" stroke="#3FA58A" stroke-width="8" fill="none" stroke-linecap="round" stroke-linejoin="round"></path>
+<path d="{{nextPath}}" stroke="#E8A317" stroke-width="10" fill="none" stroke-linecap="round" stroke-linejoin="round"></path>
+<sc-for list="{{marks}}" as="m" hint-placeholder-count="4">
+<circle cx="{{m.x}}" cy="{{m.y}}" r="16" fill="{{m.fill}}" stroke="#0D1513" stroke-width="3"></circle>
+<text x="{{m.x}}" y="{{m.ty}}" font-size="14" font-weight="700" text-anchor="middle" fill="#0D1513" font-family="IBM Plex Sans">{{m.n}}</text>
+</sc-for>
+<circle cx="{{taxiX}}" cy="{{taxiY}}" r="24" fill="#2F6FED" opacity="0.25"></circle>
+<circle cx="{{taxiX}}" cy="{{taxiY}}" r="11" fill="#2F6FED" stroke="#FFFFFF" stroke-width="3"></circle>
+</svg>
+
+<div style="position: absolute; left: 12px; right: 12px; top: 14px; display: flex; justify-content: space-between; align-items: center; background: rgba(13,21,19,0.92); border-radius: 16px; padding: 10px 14px">
+<div style="display: flex; flex-direction: column; gap: 2px">
+<span style="font-size: 13px; color: #A9B6B2">Mini Parc vers Agdal</span>
+<span style="font-family: 'Poppins', sans-serif; font-weight: 600; font-size: 17px">{{seatsLabel}}</span>
+</div>
+<div style="display: flex; flex-direction: column; align-items: flex-end; gap: 1px">
+<span style="font-size: 12px; color: #A9B6B2">Code passagers</span>
+<span style="font-family: 'Poppins', sans-serif; font-weight: 700; font-size: 24px; letter-spacing: 4px; color: #E8A317">4827</span>
+</div>
+</div>
+
+<sc-if value="{{popup}}" hint-placeholder-val="{{ true }}">
+<div role="alert" style="position: absolute; left: 12px; right: 12px; top: 96px; background: #E8A317; color: #1A1200; border-radius: 20px; padding: 16px 18px; box-shadow: 0 8px 24px rgba(0,0,0,0.45); display: flex; flex-direction: column; gap: 6px">
+<div style="display: flex; align-items: center; gap: 8px">
+<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1A1200" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 10-12 0c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.7 21a2 2 0 01-3.4 0"></path></svg>
+<span style="font-size: 16px; font-weight: 700">Dépose dans {{next.dist}}</span>
+</div>
+<span style="font-family: 'Poppins', sans-serif; font-weight: 700; font-size: 26px; line-height: 1.15">{{next.name}}</span>
+<span style="font-size: 17px; font-weight: 600">{{next.people}} · {{next.pay}}</span>
+</div>
+</sc-if>
+
+<div style="position: absolute; left: 0; right: 0; bottom: 0; background: #0D1513; border-radius: 24px 24px 0 0; padding: 14px 16px 16px; display: flex; flex-direction: column; gap: 10px; box-shadow: 0 -6px 20px rgba(0,0,0,0.4)">
+<sc-if value="{{hasNext}}" hint-placeholder-val="{{ true }}">
+<div style="display: flex; gap: 8px; overflow-x: auto">
+<sc-for list="{{chips}}" as="c" hint-placeholder-count="3">
+<div style="flex: none; display: flex; align-items: center; gap: 8px; background: #16211E; border-radius: 14px; padding: 8px 12px">
+<span style="width: 24px; height: 24px; border-radius: 12px; background: {{c.fill}}; color: #0D1513; font-weight: 700; font-size: 13px; display: flex; align-items: center; justify-content: center">{{c.n}}</span>
+<span style="font-size: 14px; font-weight: 500">{{c.short}}</span>
+<span style="font-size: 13px; color: #A9B6B2">{{c.payShort}}</span>
+</div>
+</sc-for>
+</div>
+</sc-if>
+<sc-if value="{{done}}" hint-placeholder-val="{{ false }}">
+<p style="margin: 0; font-size: 17px; font-weight: 600">Tous les passagers sont descendus. Encaissé : {{cashTotal}} en espèces, {{cardTotal}} par carte.</p>
+</sc-if>
+<div style="display: flex; gap: 10px">
+<button type="button" onClick="{{toggleVoice}}" aria-pressed="{{voicePressed}}" aria-label="Annonce vocale" style="width: 60px; height: 60px; border-radius: 30px; border: 2px solid #3FA58A; background: {{voiceBg}}; display: flex; align-items: center; justify-content: center; flex: none">
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="{{voiceInk}}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5L6 9H2v6h4l5 4z"></path><path d="M15.5 8.5a5 5 0 010 7"></path><path d="M19 5a10 10 0 010 14"></path></svg>
+</button>
+<button type="button" onClick="{{advance}}" style="flex: 1; height: 60px; border-radius: 30px; border: 0; background: #3FA58A; color: #0D1513; font-family: 'Poppins', sans-serif; font-weight: 700; font-size: 17px">{{advanceLabel}}</button>
+</div>
+<p style="margin: 0; font-size: 12px; color: #A9B6B2; text-align: center">Démo : le bouton fait avancer le taxi. En vrai, l'alerte s'affiche seule à 300 m et la dépose se valide quand le taxi s'arrête au point.</p>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  constructor(props) { super(props); this.state = { pos: 0, voice: true }; }
+  renderVals() {
+    const route = [[60, 700], [90, 630], [120, 560], [165, 515], [210, 470], [240, 415], [270, 360], [285, 300], [300, 240], [320, 180], [340, 120]];
+    const drops = [
+      { at: 2, name: 'Avenue Al Massira', short: 'Al Massira', people: '1 passager', n: 1, pay: 'Espèces 5 Dh', payShort: 'Espèces', cash: 5, card: 0 },
+      { at: 5, name: 'Point précis après le rond-point', short: 'Point précis', people: '1 passager', n: 1, pay: 'Carte 5 Dh', payShort: 'Carte', cash: 0, card: 5 },
+      { at: 8, name: 'Masjid Badr', short: 'Masjid Badr', people: '2 passagers', n: 2, pay: '1 espèces, 1 carte', payShort: 'Mixte', cash: 5, card: 5 },
+      { at: 10, name: 'Agdal (terminus)', short: 'Agdal', people: '2 passagers', n: 2, pay: 'Espèces 10 Dh', payShort: 'Espèces', cash: 10, card: 0 }
+    ];
+    const pos = this.state.pos;
+    const upcoming = drops.filter((d) => d.at > pos || (d.at === pos && pos === 0));
+    const next = upcoming[0];
+    const path = (a, b) => route.slice(a, b + 1).map((p, i) => (i ? 'L' : 'M') + p[0] + ' ' + p[1]).join(' ');
+    const last = drops[drops.length - 1].at;
+    const onboard = upcoming.reduce((a, d) => a + d.n, 0);
+    const doneDrops = drops.filter((d) => d.at <= pos && pos > 0);
+    const dist = next ? ((next.at - pos) * 150) : 0;
+    const v = this.state.voice;
+    return {
+      aheadPath: pos < last ? path(pos, last) : 'M0 0',
+      nextPath: next ? path(pos, next.at) : 'M0 0',
+      marks: upcoming.map((d, i) => ({ x: route[d.at][0], y: route[d.at][1], ty: route[d.at][1] + 5, n: String(i + 1), fill: i === 0 ? '#E8A317' : '#3FA58A' })),
+      chips: upcoming.map((d, i) => ({ n: String(i + 1), short: d.short, payShort: d.payShort, fill: i === 0 ? '#E8A317' : '#3FA58A' })),
+      taxiX: route[pos][0], taxiY: route[pos][1],
+      next: next ? { name: next.name, people: next.people, pay: next.pay, dist: dist >= 1000 ? (dist / 1000).toFixed(1).replace('.', ',') + ' km' : dist + ' m' } : { name: '', people: '', pay: '', dist: '' },
+      popup: !!next && next.at - pos <= 2 && next.at > pos,
+      hasNext: !!next, done: !next,
+      seatsLabel: onboard + ' passagers à bord sur 6',
+      cashTotal: doneDrops.reduce((a, d) => a + d.cash, 0) + ' Dh',
+      cardTotal: doneDrops.reduce((a, d) => a + d.card, 0) + ' Dh',
+      advanceLabel: next ? 'Avancer le taxi' : 'Nouveau trajet',
+      advance: () => this.setState({ pos: next ? Math.min(pos + 1, last) : 0 }),
+      voicePressed: v ? 'true' : 'false', voiceBg: v ? '#3FA58A' : 'transparent', voiceInk: v ? '#0D1513' : '#3FA58A',
+      toggleVoice: () => this.setState({ voice: !v })
+    };
+  }
+}
+</script>
+</body>
+</html>

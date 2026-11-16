@@ -1,0 +1,623 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[a4paper,margin=2.2cm,top=2.4cm,bottom=2.4cm]{geometry}
+\usepackage{fontspec}
+\usepackage{polyglossia}
+\setdefaultlanguage{french}
+\setmainfont{IBMPlexSans}[Path=fonts/,Extension=.ttf,UprightFont=*-Regular,BoldFont=*-SemiBold,ItalicFont=*-Italic,BoldItalicFont=*-SemiBoldItalic]
+\newfontfamily\titlefont{Poppins}[Path=fonts/,Extension=.ttf,UprightFont=*-SemiBold,BoldFont=*-Bold]
+\usepackage[table]{xcolor}
+\usepackage{tabularx,xltabular,booktabs,array}
+\usepackage{enumitem}
+\usepackage{titlesec}
+\usepackage{fancyhdr}
+\usepackage[most]{tcolorbox}
+\usepackage{tikz}
+\usetikzlibrary{positioning,arrows.meta,fit,shapes.symbols,calc}
+\usepackage[edges]{forest}
+\usepackage{needspace}
+\usepackage{amssymb}
+\usepackage{microtype}
+\usepackage{xurl}
+\usepackage[hidelinks]{hyperref}
+\emergencystretch=3em
+
+\definecolor{brand}{HTML}{0E5A4A}
+\definecolor{brandlight}{HTML}{E6F0ED}
+\definecolor{accent}{HTML}{E8A317}
+\definecolor{ink}{HTML}{12201C}
+\definecolor{muted}{HTML}{5B6B66}
+\definecolor{line}{HTML}{D5DBD8}
+\definecolor{warnbg}{HTML}{FFF1D6}
+\definecolor{warnink}{HTML}{7A4B00}
+\definecolor{userblue}{HTML}{2F6FED}
+
+\color{ink}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt}
+\linespread{1.08}
+\setlist{itemsep=2pt,topsep=4pt}
+
+\titleformat{\section}{\titlefont\Large\bfseries\color{brand}}{\thesection.}{0.6em}{}
+\titleformat{\subsection}{\titlefont\large\color{ink}}{\thesubsection}{0.6em}{}
+\titlespacing*{\section}{0pt}{18pt}{8pt}
+\titlespacing*{\subsection}{0pt}{12pt}{4pt}
+
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0pt}
+\fancyhead[L]{\small\color{muted}Grand Taxi Rabat, cahier des charges}
+\fancyhead[R]{\small\color{muted}Version 1.0}
+\fancyfoot[C]{\small\color{muted}\thepage}
+
+\newcommand{\hd}[1]{\textbf{\color{white}#1}}
+\newcommand{\hdrow}{\rowcolor{brand}}
+\renewcommand{\arraystretch}{1.35}
+\newtcolorbox{avalider}{colback=warnbg,colframe=accent,boxrule=0.6pt,arc=3pt,left=6pt,right=6pt,top=4pt,bottom=4pt,fontupper=\small\color{warnink}}
+\newcommand{\valider}[1]{\begin{avalider}\textbf{À valider :} #1\end{avalider}}
+\newtcolorbox{encadre}{colback=brandlight,colframe=brandlight,arc=3pt,left=8pt,right=8pt,top=6pt,bottom=6pt}
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+\newcolumntype{P}[1]{>{\raggedright\arraybackslash}p{#1}}
+
+\begin{document}
+
+% ---------- Couverture ----------
+\thispagestyle{empty}
+\begin{tikzpicture}[remember picture,overlay]
+\fill[brand] (current page.north west) rectangle ([yshift=-9cm]current page.north east);
+\node[anchor=north west,inner sep=0] at ([xshift=2.2cm,yshift=-2.4cm]current page.north west) {%
+\begin{tikzpicture}
+\fill[white] (0,0) circle (0.9);
+\begin{scope}[shift={(0,0)},scale=0.05,line width=2.2pt,draw=brand,line cap=round,line join=round]
+\draw (-7,-4) -- (-7,1) -- (-5,6) -- (5,6) -- (7,1) -- (7,-4);
+\draw (-9,-4) rectangle (9,-8);
+\fill[brand] (-4.5,-8) circle (1.6);
+\fill[brand] (4.5,-8) circle (1.6);
+\end{scope}
+\end{tikzpicture}};
+\node[anchor=north west,text=white,font=\titlefont\bfseries\fontsize{30}{36}\selectfont] at ([xshift=2.2cm,yshift=-4.6cm]current page.north west) {Grand Taxi Rabat};
+\node[anchor=north west,text=white,font=\large,text width=15cm] at ([xshift=2.2cm,yshift=-6.2cm]current page.north west) {Trouver la bonne station de grand taxi, savoir où elle va et à quel prix, et descendre exactement où l'on veut.};
+\end{tikzpicture}
+
+\vspace*{8.6cm}
+{\titlefont\Large\color{brand} Cahier des charges et dossier de présentation}
+
+\vspace{0.6cm}
+\begin{tabularx}{\textwidth}{@{}>{\color{muted}}l Y@{}}
+Projet & Application mobile Android et iOS, version 1 \\
+Destinataires & Incubateurs, investisseurs, partenaires publics \\
+Préparé par & Zakaria Radoine \\
+Version & 1.0 \\
+Date & 10 novembre 2026 \\
+Statut & Projet en cours de cadrage, prototype web existant \\
+\end{tabularx}
+
+\vfill
+\begin{encadre}
+\small Ce document dit ce que l'application doit faire, comment je compte la construire, ce que ça coûte de la faire tourner et ce qui reste à vérifier. Les encadrés jaunes \textbf{« À valider »} marquent les points que je n'ai pas encore pu confirmer. Les chiffres du marché viennent de sources publiques citées en fin de document.
+\end{encadre}
+
+\newpage
+{\setcounter{tocdepth}{1}\tableofcontents}
+\newpage
+
+% ---------- 1 ----------
+\section{Contexte et objectifs}
+
+Grand Taxi Rabat est une application mobile qui montre où se trouvent les stations de grand taxi à Rabat, vers quelles destinations part chaque station, à quel prix et à quelles heures. Pendant le trajet, l'usager choisit où il descend, même entre deux arrêts connus, et peut le dire au chauffeur depuis son téléphone. Le chauffeur voit tous les arrêts de ses passagers dans l'ordre du trajet.
+
+\subsection{Le problème}
+Le grand taxi est un transport de masse au Maroc, mais il n'a presque aucune information en ligne :
+\begin{itemize}
+\item Les stations ne sont pas sur Google Maps de façon fiable. Elles changent, se déplacent, et une même « station » regroupe souvent plusieurs points de départ, un par destination.
+\item Les prix par place et les horaires (jour seulement, jour et nuit) se transmettent de bouche à oreille.
+\item Un nouvel arrivant, un étudiant ou un touriste doit demander dans la rue. Pendant le trajet, il ne sait pas où descendre ni quand dire « nzel hna ».
+\end{itemize}
+
+\subsection{Le marché}
+\begin{itemize}
+\item Le Maroc compte environ \textbf{44\,650 grands taxis} et près de \textbf{180\,000 chauffeurs} de taxi (ministre de l'Intérieur, décembre 2025) \cite{le360}.
+\item Parmi les Marocains qui utilisent le transport public, \textbf{47\,\%} prennent le grand taxi (enquête L'Économiste et Sunergia, juin 2025) \cite{mwnsurvey}.
+\item Le ministère de l'Intérieur mène une étude pour réformer le secteur. Il cite parmi les problèmes « la lenteur de l'adoption des applications et des systèmes de géolocalisation » \cite{allafrica}.
+\end{itemize}
+
+\subsection{La concurrence}
+\begin{xltabular}{\textwidth}{@{}P{3.1cm} Y Y@{}}
+\hdrow \hd{Acteur} & \hd{Ce qu'il fait} & \hd{Ma différence} \\
+Blassty (Rabat Région Mobilité) & Application officielle multimodale lancée en décembre 2025 : bus, tram, parking, taxis aéroport, et emplacement des stations de taxi \cite{mwnblassty}. & Spécialisée grand taxi : destinations séparées, prix, horaires, tracé de la ligne, alerte d'arrêt, signalement des erreurs. Partenaire possible plutôt que rival. \\
+Google Maps & Carte générale, quelques stations saisies par les utilisateurs. & Données vérifiées sur place, une fiche par point de départ. \\
+Uber, Careem, inDrive & Applications de VTC. Pas de cadre légal au Maroc à ce jour \cite{mwnuber}. & Je ne fais ni réservation ni paiement. L'application informe, elle ne vend pas de course. \\
+Bouche à oreille & La source actuelle. & Même information, disponible avant de sortir. \\
+\end{xltabular}
+
+J'ai étudié Blassty comme usager. J'y ai relevé des destinations collées dans le nom de la station, des doublons, aucune recherche par destination, des repères qui se chevauchent et aucun tracé de trajet. Je n'utilise pas ses données : je les prends seulement comme une liste de lieux à aller vérifier.
+
+\subsection{Objectifs}
+\begin{enumerate}[label=O\arabic*.]
+\item Couvrir toutes les stations de grand taxi de Rabat, vérifiées sur place.
+\item Permettre de trouver une station par destination en moins de 30 secondes.
+\item Afficher le tracé de chaque ligne, laisser l'usager poser son arrêt n'importe où sur la ligne et le transmettre au chauffeur.
+\item Fonctionner sans connexion, sur un Android d'entrée de gamme.
+\item Étendre ensuite à Salé et Témara, puis aux autres villes.
+\end{enumerate}
+
+\subsection{Indicateurs de succès}
+\begin{xltabular}{\textwidth}{@{}l Y l@{}}
+\hdrow \hd{Indicateur} & \hd{Mesure} & \hd{Cible} \\
+Couverture & Stations vérifiées sur le total connu à Rabat & À fixer \\
+Fraîcheur & Part des stations vérifiées dans les 90 derniers jours & À fixer \\
+Usage & Utilisateurs actifs par mois & À fixer \\
+Utilité & Recherches qui mènent à « Y aller » & À fixer \\
+Qualité & Signalements traités en moins de 7 jours & À fixer \\
+\end{xltabular}
+\valider{les cibles chiffrées, après un premier mois de test.}
+
+% ---------- 2 ----------
+\Needspace{8cm}
+\section{Public cible et parcours}
+
+\begin{xltabular}{\textwidth}{@{}l Y Y@{}}
+\hdrow \hd{Profil} & \hd{Situation} & \hd{Ce qu'il veut} \\
+Habitant de Rabat & Connaît son quartier, pas les autres lignes. & Savoir d'où part le taxi vers un quartier qu'il connaît mal. \\
+Étudiant, nouvel arrivant & Vient d'une autre ville. & Trouver la station, le prix, l'heure du dernier taxi. \\
+Visiteur, touriste & Ne parle pas toujours darija. & Une carte claire, en français ou en anglais (phase 2). \\
+Personne âgée, aidant & Peu à l'aise avec les applications. & Gros boutons, peu d'écrans, l'arabe. \\
+\end{xltabular}
+
+Tous arrivent sur téléphone, souvent en 4G, parfois sans réseau.
+
+\subsection{Parcours principal}
+\begin{center}
+\begin{tikzpicture}[
+  stp/.style={rectangle,rounded corners=6pt,draw=brand,fill=brandlight,text width=2.35cm,align=center,minimum height=1.5cm,font=\small},
+  arr/.style={-{Stealth[length=6pt]},draw=brand,line width=1pt},
+  node distance=0.45cm]
+\node[stp] (a) {Ouvrir l'app};
+\node[stp,right=of a] (b) {Taper « Agdal »};
+\node[stp,right=of b] (c) {Voir les stations proches, prix, horaires};
+\node[stp,right=of c] (d) {« Y aller à pied »};
+\node[stp,below=1cm of d] (e) {À la station : « Voir le trajet »};
+\node[stp,left=of e] (f) {L'app suit la ligne};
+\node[stp,left=of f,fill=warnbg,draw=accent] (g) {Alerte un arrêt avant};
+\node[stp,left=of g] (h) {Descendre au bon endroit};
+\draw[arr] (a)--(b); \draw[arr] (b)--(c); \draw[arr] (c)--(d);
+\draw[arr] (d)--(e); \draw[arr] (e)--(f); \draw[arr] (f)--(g); \draw[arr] (g)--(h);
+\end{tikzpicture}
+\end{center}
+
+% ---------- 3 ----------
+\Needspace{9cm}
+\section{Périmètre : écrans et contenus}
+
+\begin{center}
+\begin{forest}
+for tree={folder,grow'=0,font=\small,edge={draw=brand,line width=0.7pt},fit=band,inner sep=2pt}
+[{\textbf{Application Grand Taxi Rabat}}
+  [{Accueil : carte, recherche par destination, liste des stations proches}]
+  [{Fiche station : destinations, prix, horaires, photo, repère}
+    [{Y aller à pied (lien vers Google Maps ou Waze)}]
+    [{Voir le trajet : tracé et arrêts}
+      [{Mode trajet : arrêt connu ou point précis, alerte, partage avec le chauffeur}]]
+    [{Signaler une erreur}]]
+  [{Mode chauffeur : code du trajet, arrêts des passagers, annonce vocale}]
+  [{Favoris (stations enregistrées sur le téléphone)}]
+  [{Réglages : langue (FR, AR), à propos, confidentialité, mentions légales}]
+  [{Back-office (web, équipe seulement) : stations, lignes, signalements}]
+]
+\end{forest}
+\end{center}
+
+\subsection{Contenus}
+\begin{itemize}
+\item \textbf{Station} : nom du point de départ, quartier, position, photo, repère, destinations, prix par place, horaires, date de dernière vérification.
+\item \textbf{Ligne} : station de départ, destination, arrêts nommés, tracé enregistré sur un vrai trajet.
+\item \textbf{Textes} : en français et en arabe. Anglais en phase 2.
+\end{itemize}
+
+\subsection{Hors périmètre de la version 1}
+\begin{itemize}
+\item Réservation et appel d'un taxi : pas de cadre légal pour les applications de transport à ce jour \cite{mwnuber}.
+\item Paiement par carte dans l'application (phase 2, voir 4.3).
+\item Comptes utilisateurs.
+\item Petits taxis, bus et tram (Blassty les couvre déjà).
+\item Suivi public des taxis en temps réel et remplissage du taxi (phase 2).
+\end{itemize}
+
+% ---------- 4 ----------
+\section{Exigences fonctionnelles}
+
+\begin{xltabular}{\textwidth}{@{}l P{3.3cm} Y l@{}}
+\hdrow \hd{Réf.} & \hd{Fonction} & \hd{Détail} & \hd{Priorité} \\
+F1 & Carte des stations & Carte de Rabat avec un repère par point de départ, regroupés quand ils se chevauchent. & Indispensable \\
+F2 & Recherche par destination & Champ de recherche et raccourcis (Agdal, Centre Ville\dots). Les stations qui n'y vont pas passent en gris. & Indispensable \\
+F3 & Fiche station & Destinations, prix par place, horaires, photo, repère, date de vérification, mention « non vérifiée ». & Indispensable \\
+F4 & Itinéraire à pied & Bouton qui ouvre Google Maps ou Waze en mode marche vers la station. & Indispensable \\
+F5 & Hors connexion & Stations et lignes stockées sur le téléphone, mises à jour quand le réseau revient. & Indispensable \\
+F6 & Deux langues & Français et arabe, arabe de droite à gauche. & Indispensable \\
+F7 & Signaler une erreur & Formulaire court, sans compte (voir 4.1). & Indispensable \\
+F8 & Back-office & Saisie et vérification des stations et lignes, traitement des signalements, export des données. & Indispensable \\
+F9 & Tracé de la ligne & Ligne dessinée sur la carte avec ses arrêts nommés. & Souhaitable \\
+F10 & Mode trajet & Position de l'usager sur la ligne, alerte avant son arrêt. Seulement quand l'app est ouverte. & Souhaitable \\
+F11 & Arrêt libre & L'usager choisit un arrêt connu ou pose un point précis. Le point est accroché à la ligne du taxi, puisque le grand taxi peut s'arrêter n'importe où sur son trajet. Le chemin jusqu'à ce point s'affiche aussitôt, avec la distance restante, chez l'usager et chez le chauffeur. & Souhaitable \\
+F12 & Dire son arrêt au chauffeur & L'usager entre le code à 4 chiffres affiché dans le taxi (ou scanne le QR). Son arrêt part vers le téléphone du chauffeur, sans nom ni numéro. & Souhaitable \\
+F13 & Mode chauffeur & Carte en plein écran avec toutes les déposes en repères numérotés et le chemin jusqu'à la prochaine en surbrillance. Une alerte s'affiche par-dessus la carte à 300 m : lieu, nombre de passagers, mode de paiement. Annonce vocale. La dépose se valide seule quand le taxi s'arrête près du point. & Souhaitable \\
+F14 & Paiement & L'usager indique espèces ou carte en partageant son arrêt. Espèces : payées au chauffeur. Carte : payée sur le téléphone du chauffeur (Soft POS de sa banque). Le chauffeur voit le mode de chaque passager et le total en fin de trajet. & Souhaitable \\
+F15 & Paiement dans l'app & Paiement par carte depuis le téléphone du passager, via un prestataire agréé au Maroc. & Phase 2 \\
+F16 & Favoris & Stations enregistrées sur le téléphone. & Souhaitable \\
+F17 & Salé, Témara, autres villes & Même fonctionnement, nouvelles données. & Phase 2 \\
+F18 & Remplissage du taxi & « Il reste 2 places » signalé par les chauffeurs ou les usagers. & Phase 2 \\
+F19 & Anglais & Troisième langue pour les visiteurs. & Phase 2 \\
+\end{xltabular}
+
+\subsection{Formulaire « Signaler une erreur »}
+Je collecte le minimum : pas de nom, pas de téléphone, pas d'email.
+
+\begin{xltabular}{\textwidth}{@{}l l Y l@{}}
+\hdrow \hd{Champ} & \hd{Type} & \hd{Règle} & \hd{Obligatoire} \\
+Station & Caché & Identifiant de la station affichée. & Oui \\
+Type d'erreur & Choix unique & Station disparue, mauvais emplacement, destination fausse, prix ou horaires faux, autre. & Oui \\
+Détail & Texte & 300 caractères maximum, texte brut. & Non \\
+Ma position & Case à cocher & Envoyée une seule fois, arrondie, jamais liée à une identité. & Non \\
+\end{xltabular}
+
+\textbf{États} : vide ; erreur (type non choisi, message sous le champ) ; envoi en cours (bouton désactivé) ; succès (« Merci, l'équipe vérifie sur place ») ; hors connexion (le signalement attend sur le téléphone et part tout seul) ; échec du serveur (nouvel essai automatique, puis message).
+
+
+\Needspace{8cm}
+\subsection{Arrêt libre et mode chauffeur}
+Un grand taxi n'a pas d'arrêts fixes : il s'arrête là où un passager le demande. L'application suit cette réalité.
+
+\begin{enumerate}
+\item \textbf{Le chauffeur} ouvre le mode chauffeur et choisit sa ligne. L'app crée un trajet avec un code à 4 chiffres et un QR, à coller dans le taxi.
+\item \textbf{Le passager} ouvre le mode trajet, touche un arrêt connu ou pose un point précis sur la ligne, puis entre le code.
+\item \textbf{Le serveur} range les arrêts de tous les passagers dans l'ordre du trajet et les envoie au téléphone du chauffeur en temps réel.
+\item \textbf{En roulant}, le chauffeur ne touche rien : l'écran montre le prochain arrêt en grand, une voix l'annonce, et l'arrêt passe tout seul quand le taxi s'arrête près du point.
+\item \textbf{À la fin du trajet}, tout est effacé : arrêts, positions, code.
+\end{enumerate}
+
+\Needspace{5cm}
+\begin{xltabular}{\textwidth}{@{}P{3.4cm} Y@{}}
+\hdrow \hd{Donnée} & \hd{Règle} \\
+Code du trajet & 4 chiffres, valable pour un seul trajet, expire au bout de 2 heures. \\
+Arrêt du passager & Un point sur la ligne, sans nom ni numéro. Effacé à la fin du trajet. \\
+Position du taxi & Lue sur le téléphone du chauffeur pendant le trajet seulement, jamais gardée. \\
+Nombre de passagers & Calculé à partir des arrêts partagés, maximum 6. \\
+\end{xltabular}
+
+\valider{la règle du Code de la route sur un téléphone fixé sur un support. Tenir le téléphone en main au volant est interdit ; le kit mains libres est permis \cite{mre}. À confirmer auprès de la NARSA avant le pilote.}
+
+
+\Needspace{8cm}
+\subsection{Paiement : espèces et carte}
+Le prix reste le tarif habituel par place (5 Dh pour Mini Parc vers Agdal par exemple). L'application l'affiche, elle ne le fixe pas.
+
+\begin{xltabular}{\textwidth}{@{}P{3cm} Y P{2.3cm}@{}}
+\hdrow \hd{Mode} & \hd{Comment} & \hd{Quand} \\
+Espèces & Le passager paie le chauffeur à la descente. L'app note seulement « espèces ». & Version 1 \\
+Carte sur le téléphone du chauffeur & Le chauffeur encaisse avec une solution Soft POS de sa banque : son téléphone devient un terminal sans contact (CMI « Tap to mobile » \cite{cmi}, Attijari « Sahl Pay » \cite{sahl}). L'app ne voit jamais la carte. & Version 1, si le chauffeur est équipé \\
+Carte dans l'app & Le passager paie depuis son téléphone. Il faut une société marocaine et un prestataire agréé (CMI par la banque, ou un agrégateur comme PayZone). Stripe n'ouvre pas de compte aux sociétés marocaines. Frais estimés autour de 1,5 à 3\,\% par paiement \cite{kolonell}. & Phase 2 \\
+\end{xltabular}
+
+\valider{les frais réels et les conditions d'ouverture auprès d'une banque ou d'un agrégateur. Les chiffres ci-dessus sont des ordres de grandeur. Le paiement dans l'app fait de l'application un intermédiaire de paiement : à vérifier avec un juriste au regard des règles des taxis.}
+
+% ---------- 5 ----------
+\Needspace{8cm}
+\section{Charte graphique et UX}
+
+\begin{center}
+\begin{tikzpicture}
+\foreach \c/\n/\h/\i in {brand/Vert station/0E5A4A/0, accent/Ambre alerte/E8A317/1, ink/Encre/12201C/2, muted/Gris texte/5B6B66/3, brandlight/Vert clair/E6F0ED/4, userblue/Position/2F6FED/5}{
+  \fill[\c,rounded corners=4pt] (\i*2.75,0) rectangle ++(2.4,1.4);
+  \draw[line,rounded corners=4pt] (\i*2.75,0) rectangle ++(2.4,1.4);
+  \node[anchor=north,font=\small\bfseries] at (\i*2.75+1.2,-0.1) {\n};
+  \node[anchor=north,font=\footnotesize\color{muted}] at (\i*2.75+1.2,-0.55) {\#\h};
+}
+\end{tikzpicture}
+\end{center}
+
+\begin{xltabular}{\textwidth}{@{}l Y@{}}
+\hdrow \hd{Élément} & \hd{Choix} \\
+Couleur principale & Vert \#0E5A4A : boutons, repères, liens. Contraste sur blanc supérieur à 7:1. \\
+Couleur d'alerte & Ambre \#E8A317 : seulement pour l'alerte d'arrêt, pour qu'elle saute aux yeux. \\
+Titres & Poppins. \\
+Texte & IBM Plex Sans, et IBM Plex Sans Arabic pour l'arabe. \\
+Formes & Cartes arrondies (16 px), boutons en pilule, icônes au trait, pas d'emoji. \\
+\end{xltabular}
+
+\textbf{Règles UX}
+\begin{itemize}
+\item Une main, debout dans la rue : zones tactiles d'au moins 44 px, actions principales en bas de l'écran.
+\item Trois appuis au plus de l'ouverture à « Y aller ».
+\item L'information incertaine se voit : « non vérifiée », « à confirmer ».
+\item En arabe, tout l'écran passe de droite à gauche, les icônes de direction sont inversées, les numéros restent de gauche à droite.
+\end{itemize}
+
+La maquette interactive (6 écrans : accueil, fiche station, mode trajet avec arrêt libre, signalement, accueil en arabe, mode chauffeur) est disponible sur demande.
+\valider{le nom « Grand Taxi Rabat » (nom de travail), la palette et les textes arabes.}
+
+% ---------- 6 ----------
+\Needspace{8cm}
+\section{Exigences techniques}
+
+\subsection{Choix techniques}
+\begin{xltabular}{\textwidth}{@{}P{2.7cm} P{4.1cm} Y@{}}
+\hdrow \hd{Couche} & \hd{Choix} & \hd{Raison} \\
+Application & Expo (React Native), TypeScript & Un seul code pour Android et iOS. Les versions iOS se compilent en ligne, sans Mac. \\
+Carte & MapLibre et tuiles OpenFreeMap & Gratuit, sans clé, sans limite de vues, données OpenStreetMap \cite{openfreemap}. \\
+Données publiques & Fichiers JSON versionnés sur un CDN, copie dans l'app & L'app fonctionne hors connexion et ne coûte rien par utilisateur. \\
+Back-office & Supabase (PostgreSQL et PostGIS) & Base, connexion de l'équipe et règles d'accès prêtes. Offre gratuite : 500 Mo, 500\,000 appels de fonctions par mois \cite{supabase}. \\
+Signalements & Fonction serveur Supabase & La clé secrète reste côté serveur, limite d'envois par appareil. \\
+Arrêts partagés & Supabase Realtime & Envoie les arrêts au chauffeur en direct. Offre gratuite : 200 connexions simultanées, 2 millions de messages par mois \cite{supabase}. \\
+Tracés & GPS enregistré sur un vrai trajet, recalé sur la route avec OSRM & Calculé une fois par l'équipe, pas d'appel payant par usager. \\
+Marche jusqu'à la station & Lien vers Google Maps ou Waze & Gratuit, et les usagers connaissent déjà ces apps. \\
+Compilation & EAS Build & 15 versions Android et 15 iOS gratuites par mois \cite{expo}. \\
+Suivi des erreurs & Sentry & Voir les plantages avant que les usagers les signalent. \\
+\end{xltabular}
+
+\textbf{Pourquoi pas les autres options}
+\begin{itemize}
+\item \textbf{SDK Google Maps et navigation Google} : la carte mobile est gratuite, mais le calcul d'itinéraire n'a que 10\,000 appels gratuits par mois, et la navigation 1\,000, puis 25~\$ les 1\,000 \cite{gmaps}. Les tracés précalculés évitent cette facture.
+\item \textbf{Flutter} : un deuxième langage à apprendre. Le prototype existe déjà en JavaScript.
+\item \textbf{Kotlin et Swift séparés} : deux codes à maintenir pour une petite équipe.
+\item \textbf{Serveur sur mesure} : Supabase couvre le besoin de la version 1.
+\end{itemize}
+
+\subsection{Architecture}
+\begin{center}
+\begin{tikzpicture}[
+  box/.style={rectangle,rounded corners=5pt,draw=brand,fill=white,text width=3.3cm,align=center,minimum height=1.25cm,font=\small},
+  pub/.style={box,fill=brandlight},
+  priv/.style={box,fill=warnbg,draw=accent},
+  arr/.style={-{Stealth[length=5pt]},draw=ink,line width=0.7pt},
+  lab/.style={font=\scriptsize\color{muted},fill=white,inner sep=1pt}]
+\node[box] (app) at (0,0) {\textbf{App mobile}\\ Expo, MapLibre\\ données en cache};
+\node[pub] (tiles) at (-4.6,2.4) {Tuiles de carte\\ OpenFreeMap};
+\node[pub] (cdn) at (0,2.4) {Fichiers JSON\\ stations, lignes\\ (CDN)};
+\node[pub] (gmaps) at (4.6,2.4) {Google Maps / Waze\\ (lien externe)};
+\node[priv] (fn) at (4.6,-2.4) {Fonction serveur\\ signalements, arrêts\\ \emph{clé secrète ici}};
+\node[priv] (db) at (0,-2.4) {Supabase\\ PostgreSQL, PostGIS};
+\node[priv] (bo) at (-4.6,-2.4) {Back-office web\\ équipe, 2FA};
+\node[box] (osrm) at (-4.6,-4.8) {OSRM\\ (recalage des tracés)};
+\node[box] (sentry) at (4.6,0) {Sentry};
+\node[priv] (rt) at (4.6,-4.8) {Temps réel\\ arrêts partagés\\ \emph{effacés en fin de trajet}};
+\node[box] (drv) at (0,-4.8) {\textbf{App mode chauffeur}};
+\draw[arr] (app) -- node[lab]{lit} (tiles);
+\draw[arr] (app) -- node[lab]{télécharge} (cdn);
+\draw[arr] (app) -- node[lab]{ouvre} (gmaps);
+\draw[arr] (app) -- node[lab]{signale, partage} (fn);
+\draw[arr] (fn) -- node[lab]{écrit} (db);
+\draw[arr] (bo) -- node[lab]{gère} (db);
+\draw[arr] ([yshift=0.35cm]db.west) -- ++(-0.65,0) |- node[lab,pos=0.25]{export} (cdn.west);
+\draw[arr] (bo) -- node[lab]{tracés GPS} (osrm);
+\draw[arr] (app) -- node[lab]{erreurs} (sentry);
+\draw[arr] (fn.south) -- node[lab]{arrêts} (rt.north);
+\draw[arr] (rt) -- node[lab]{en direct} (drv);
+\end{tikzpicture}
+\end{center}
+{\small\color{muted} En vert : public, sans donnée personnelle. En jaune : privé, accès restreint.}
+
+\subsection{Coûts de fonctionnement connus}
+\begin{xltabular}{\textwidth}{@{}l Y@{}}
+\hdrow \hd{Poste} & \hd{Coût vérifié} \\
+Compte Google Play & 25~\$, une seule fois \cite{stores} \\
+Compte Apple Developer & 99~\$ par an \cite{stores} \\
+Carte (OpenFreeMap) & Gratuit \cite{openfreemap} \\
+Supabase & Gratuit jusqu'aux limites ci-dessus, puis à partir de 25~\$ par mois \cite{supabase} \\
+EAS Build & Gratuit jusqu'à 15 versions par mois et par plateforme, puis 19~\$ par mois \cite{expo} \\
+Nom de domaine, Sentry, OSRM & Non chiffrés \\
+\end{xltabular}
+\valider{l'offre gratuite Supabase met le projet en pause après une semaine sans activité \cite{supabase}. Il faut un petit appel régulier ou l'offre payante au lancement.}
+
+% ---------- 7 ----------
+\Needspace{8cm}
+\section{Sécurité et protection des données}
+
+\begin{xltabular}{\textwidth}{@{}P{3.2cm} P{2.3cm} Y@{}}
+\hdrow \hd{Règle} & \hd{S'applique ?} & \hd{Comment} \\
+Secrets & Oui & Clés dans des variables d'environnement. Seule la clé publique Supabase est dans l'app ; elle ne permet que d'ajouter un signalement. La clé secrète reste dans la fonction serveur. \\
+Contrôle des entrées & Oui & Schéma strict sur le serveur pour chaque signalement, champs inconnus refusés. \\
+Base de données & Oui & Règles d'accès par ligne (RLS) : le public ne lit rien dans la base, l'équipe se connecte. \\
+Limite d'envois & Oui & Nombre de signalements limité par appareil et par heure. \\
+Erreurs & Oui & Message simple pour l'usager, détails dans Sentry seulement. \\
+Comptes de l'équipe & Oui & Mot de passe fort et 2FA sur Supabase, GitHub, Expo, comptes des stores, domaine. \\
+Comptes usagers & Non & Pas de compte en version 1. \\
+Paiement & Oui & Version 1 : aucune donnée de carte dans l'app, seulement le mode choisi. Phase 2 : page de paiement du prestataire agréé, jamais de numéro de carte chez nous. \\
+Position de l'usager & Oui & Lue seulement quand l'app est ouverte, traitée sur le téléphone. Envoyée seulement si l'usager partage son arrêt (un point sur la ligne) ou coche la case d'un signalement. \\
+Code du trajet & Oui & Code court à durée limitée, limite d'essais par appareil pour empêcher de deviner un code. Un passager ne voit jamais les arrêts des autres. \\
+Fin de trajet & Oui & Arrêts et positions effacés automatiquement à la fin du trajet ou au bout de 2 heures. \\
+\end{xltabular}
+
+\subsection{Cadre légal}
+\begin{itemize}
+\item \textbf{Loi 09-08 et CNDP} : les signalements peuvent contenir une position, donc une donnée personnelle. Je prévois une politique de confidentialité, des mentions légales et la déclaration à la CNDP.
+\item \textbf{Arrêts partagés} : le point de descente d'un passager est une donnée de localisation. Je n'envoie que ce point, sans identité, et je l'efface en fin de trajet.
+\item \textbf{Transfert hors du Maroc} : la base Supabase serait hébergée en Europe. La loi 09-08 encadre les transferts de données vers l'étranger.
+\item \textbf{Stores} : Google Play préfère la localisation au premier plan. La localisation en arrière-plan demande un formulaire, une vidéo et une revue \cite{playloc}. Le mode trajet ne marche donc que quand l'app est ouverte. Apple refuse souvent les apps sans politique de confidentialité \cite{stores}.
+\item \textbf{OpenStreetMap} : les données de carte sont sous licence ODbL. Je crédite OpenStreetMap. Mes données de stations restent une base séparée \cite{osm}.
+\item \textbf{Applications de transport} : le ministère du Transport a dit en octobre 2025 ne plus délivrer d'agréments aux services passant par des applications \cite{mwnuber}. Je reste sur de l'information, sans course ni paiement. Le mode chauffeur sert un taxi déjà en route avec ses passagers à bord : il ne trouve pas de clients et ne fixe pas de prix.
+\item \textbf{Téléphone au volant} : tenir son téléphone en main est interdit, le kit mains libres est permis \cite{mre}. Le mode chauffeur est fait pour un téléphone sur support, avec annonce vocale et sans saisie en roulant.
+\end{itemize}
+\valider{avec la CNDP ou un juriste : la forme de déclaration (simplifiée ou normale) et le transfert vers un hébergeur en Europe.}
+
+\Needspace{8cm}
+\subsection{Liste de contrôle avant lancement}
+\begin{xltabular}{\textwidth}{@{}r Y l@{}}
+\hdrow \hd{N°} & \hd{Point} & \hd{État} \\
+1 & Aucune clé secrète dans l'app ou dans Git & À faire \\
+2 & Toute clé publiée par erreur est changée & À faire \\
+3 & Limite d'envois active & À faire \\
+4 & Accès vérifié côté serveur & À faire \\
+5 & Règles RLS : le public ne lit rien & À faire \\
+6 & Entrées validées sur le serveur & À faire \\
+7 & Alertes de dépense sur les services payants & À faire \\
+8 & Pas de détail technique dans les messages d'erreur & À faire \\
+9 & Sentry en place & À faire \\
+10 & Sauvegarde de la base et restauration testée & À faire \\
+11 & Écrans « introuvable » et « erreur » propres, en FR et AR & À faire \\
+12 & Testé sur un Android d'entrée de gamme & À faire \\
+13 & Ouverture de l'app en moins de 3 secondes & À faire \\
+14 & Fiche store et image de partage & À faire \\
+15 & Politique de confidentialité, mentions légales, CNDP & À faire \\
+16 & Statistiques d'usage sans traçage publicitaire & À faire \\
+17 & Signalement testé de bout en bout, hors connexion compris & À faire \\
+18 & SPF, DKIM, DMARC & N/A, l'app n'envoie pas d'email \\
+19 & Contact de l'équipe dans l'app et sur le store & À faire \\
+20 & Plan de retour arrière (version précédente sur les stores, données JSON précédentes) & À faire \\
+\end{xltabular}
+
+% ---------- 8 ----------
+\Needspace{7cm}
+\section{Performance, référencement et accessibilité}
+\begin{xltabular}{\textwidth}{@{}l Y l@{}}
+\hdrow \hd{Domaine} & \hd{Cible} & \hd{Contrôle} \\
+Démarrage & Carte affichée en moins de 3 s sur un Android d'entrée de gamme & Test sur appareil \\
+Hors connexion & Carte des stations utilisable sans réseau & Mode avion \\
+Taille & Application installée légère, données des stations de petite taille & Mesure de la taille \\
+Batterie & Position lue seulement en mode trajet, écran ouvert & Test de 30 min \\
+Accessibilité & Contraste 4,5:1 minimum, zones tactiles 44 px, lecteurs d'écran (TalkBack, VoiceOver) & Audit manuel \\
+Langues & Français et arabe complets, droite à gauche correcte & Relecture \\
+Stores & Fiche en FR et AR, mots-clés « grand taxi », « Rabat », et leurs équivalents en arabe & Revue avant mise en ligne \\
+\end{xltabular}
+
+% ---------- 9 ----------
+\Needspace{6cm}
+\section{Livrables et ressources nécessaires}
+\textbf{Ce que je livre}
+\begin{itemize}
+\item Application Android (Google Play), puis iOS (App Store).
+\item Back-office web pour l'équipe.
+\item Données des stations et lignes de Rabat, vérifiées sur place.
+\item Code source sur GitHub, documentation, politique de confidentialité.
+\end{itemize}
+
+\textbf{Ce dont le projet a besoin}
+\begin{itemize}[label=$\square$]
+\item Temps de terrain pour relever les stations, les photos et les tracés GPS.
+\item 12 testeurs pendant 14 jours avant la publication Google Play (règle des nouveaux comptes personnels) \cite{stores}.
+\item Un budget de lancement pour les comptes des stores et l'hébergement.
+\item Un accompagnement : je vise un programme d'incubation marocain (Boost Up Lab du Technopark, puis l'offre Startup Venture Building qui prévoit jusqu'à 200\,000 MAD de subvention d'incubation \cite{vb}).
+\item Un avis juridique sur la déclaration CNDP.
+\item Des contacts avec Rabat Région Mobilité et des représentants de chauffeurs.
+\end{itemize}
+
+% ---------- 10 ----------
+\Needspace{9cm}
+\section{Planning et recette}
+\begin{center}
+\begin{tikzpicture}[
+  chev/.style={signal,signal to=east,signal from=west,draw=white,fill=brand,text=white,minimum height=1.1cm,text width=1.95cm,align=center,font=\small\bfseries,inner xsep=4pt},
+  node distance=0.08cm]
+\node[chev] (p0) {Phase 0\\ Données};
+\node[chev,right=of p0] (p1) {Phase 1\\ App V1};
+\node[chev,right=of p1] (p2) {Phase 2\\ Test fermé};
+\node[chev,right=of p2,fill=accent,text=ink] (p3) {Phase 3\\ Lancement};
+\node[chev,right=of p3,fill=muted] (p4) {Phase 4\\ Extension};
+\end{tikzpicture}
+\end{center}
+
+\begin{xltabular}{\textwidth}{@{}l Y Y@{}}
+\hdrow \hd{Phase} & \hd{Contenu} & \hd{Critère de sortie} \\
+0. Données & Relevé des stations de Rabat, photos, tracés GPS, back-office. & Toutes les stations connues saisies et vérifiées. \\
+1. App V1 & F1 à F8, puis F9 à F14 et F16. & Parcours principal fonctionnel sur Android. \\
+2. Test fermé & 12 testeurs, 14 jours, corrections. & Aucun bug bloquant, liste de contrôle remplie. \\
+3. Lancement & Publication Google Play, puis App Store. Communication locale. & Application en ligne, indicateurs suivis. \\
+4. Extension & Salé, Témara, puis autres villes. Partenariats. & Selon les résultats de la phase 3. \\
+\end{xltabular}
+\valider{les dates de chaque phase, selon le temps disponible et le financement.}
+
+\textbf{Recette}
+\begin{itemize}[label=$\square$]
+\item Chercher « Agdal » et trouver la bonne station en moins de 30 secondes.
+\item « Y aller à pied » ouvre la bonne destination dans Google Maps.
+\item En mode avion, la carte et les fiches restent disponibles.
+\item En mode trajet, l'alerte apparaît avant son arrêt.
+\item Un point précis posé par le passager apparaît dans le bon ordre chez le chauffeur en moins de 5 secondes.
+\item À la fin du trajet, plus aucun arrêt ni position n'est en base.
+\item Chez le chauffeur, l'alerte de dépose s'affiche par-dessus la carte avant le point, avec le mode de paiement.
+\item Un signalement envoyé hors connexion part au retour du réseau.
+\item Tout l'écran est correct en arabe.
+\end{itemize}
+
+% ---------- 11 ----------
+\Needspace{7cm}
+\section{Maintenance, comptes et limites}
+\begin{itemize}
+\item \textbf{Comptes} : tous au nom du projet (stores, Supabase, GitHub, domaine), avec 2FA.
+\item \textbf{Mise à jour des données} : chaque station a une date de vérification. Une station non vérifiée depuis 90 jours repasse en « à vérifier ».
+\item \textbf{Sauvegardes} : export régulier de la base et des fichiers JSON dans Git, restauration testée.
+\item \textbf{Retour arrière} : republier la version précédente de l'app ou des fichiers JSON.
+\item \textbf{Mises à jour de l'app} : correctifs de contenu par mise à jour à distance (EAS Update), nouvelles fonctions par les stores.
+\end{itemize}
+
+\subsection{Modèle économique : pistes à tester}
+Je ne donne pas de chiffre de revenu à ce stade. Les pistes à tester sont :
+\begin{itemize}
+\item Partenariat ou licence des données avec Rabat Région Mobilité et les communes.
+\item Données anonymes sur la demande par ligne, utiles à la réforme du secteur.
+\item Annonces locales discrètes près des stations (commerces, écoles), sans traçage.
+\end{itemize}
+
+\Needspace{7cm}
+\subsection{Points à valider}
+\begin{xltabular}{\textwidth}{@{}r Y l@{}}
+\hdrow \hd{N°} & \hd{Point} & \hd{Avec qui} \\
+1 & Déclaration CNDP et hébergement en Europe & CNDP, juriste \\
+2 & Intérêt d'un partenariat & Rabat Région Mobilité \\
+3 & Accueil de l'app par les chauffeurs & Représentants des chauffeurs \\
+4 & Nom de l'application et marque & Équipe \\
+5 & Cibles des indicateurs & Après un mois de test \\
+6 & Destination réelle de la station Mini Parc vers « Hay Riad » & Vérification sur place \\
+7 & Le mode chauffeur reste-t-il hors du champ des applications de transport ? & Ministère de l'Intérieur, juriste \\
+8 & Téléphone sur support au volant & NARSA \\
+9 & Envie des chauffeurs d'utiliser le mode chauffeur & Pilote avec quelques chauffeurs \\
+10 & Soft POS pour les chauffeurs : conditions et frais & Banques, CMI \\
+11 & Paiement dans l'app : prestataire, frais, statut juridique & Agrégateur, juriste \\
+\end{xltabular}
+
+% ---------- 12 ----------
+\Needspace{6cm}
+\section{Lexique}
+{\renewcommand{\arraystretch}{1.12}\small
+\begin{xltabular}{\textwidth}{@{}l Y@{}}
+\hdrow \hd{Terme} & \hd{Sens} \\
+Back-office & Site privé où l'équipe saisit et vérifie les données. \\
+CDN & Réseau de serveurs qui livre des fichiers vite, partout. \\
+CNDP & Commission nationale de contrôle de la protection des données à caractère personnel. \\
+Droite à gauche (RTL) & Sens de lecture de l'arabe ; l'écran entier est inversé. \\
+GPS, géolocalisation & Position du téléphone. \\
+Hors connexion & L'app marche sans internet grâce aux données gardées sur le téléphone. \\
+JSON & Format de fichier texte pour stocker des données. \\
+OpenStreetMap (OSM) & Carte du monde libre, faite par ses utilisateurs. \\
+Recette & Tests de validation avant la mise en ligne. \\
+RLS & Règles qui disent qui peut lire ou écrire chaque ligne de la base. \\
+Store & Boutique d'applications (Google Play, App Store). \\
+Tracé & Ligne suivie par le taxi, enregistrée sur un vrai trajet. \\
+VTC & Voiture de transport avec chauffeur, réservée par application. \\
+\end{xltabular}}
+
+\section*{Sources}
+\addcontentsline{toc}{section}{Sources}
+{\footnotesize
+\renewcommand{\refname}{}\setlength{\itemsep}{0pt}
+\vspace{-1.2cm}
+\begin{thebibliography}{99}\setlength{\itemsep}{1pt}\setlength{\parskip}{0pt}
+\bibitem{le360} Le360, « Dilemme de l'intégration des taxis à la modernisation du transport public », 23/12/2025. \href{https://fr.le360.ma/politique/dilemme-dintegration-des-taxis-a-la-modernisation-du-transport-public-ce-quen-dit-abdelouafi-laftit_SI5PIEJVSJHF7BRPXKKKSCKV6E/}{\textcolor{brand}{fr.le360.ma}}
+\bibitem{allafrica} AllAfrica (MAP), « Lancement d'une étude stratégique visant le développement et l'organisation du secteur des taxis », 24/12/2025. \href{https://fr.allafrica.com/stories/202512240397.html}{\textcolor{brand}{fr.allafrica.com}}
+\bibitem{mwnsurvey} Morocco World News, « Only 18\% of Moroccans use ride-sharing apps », 05/06/2025. \href{https://www.moroccoworldnews.com/2025/06/208207/only-18-of-moroccans-use-ride-sharing-apps-despite-high-satisfaction/}{\textcolor{brand}{moroccoworldnews.com}}
+\bibitem{mwnblassty} Morocco World News, « Rabat launches Blassty », 15/12/2025. \href{https://www.moroccoworldnews.com/2025/12/271965/rabat-launches-blassty-moroccos-first-all-in-one-urban-mobility-app/}{\textcolor{brand}{moroccoworldnews.com}}
+\bibitem{mwnuber} Morocco World News, « Uber extends ride-hailing to Agadir and Tangier », 01/07/2026. \href{https://www.moroccoworldnews.com/2026/07/326727/uber-extends-ride-hailing-to-agadir-and-tangier-reinforces-casablanca-and-rabat/}{\textcolor{brand}{moroccoworldnews.com}}
+\bibitem{gmaps} Google Maps Platform, tarifs. \href{https://developers.google.com/maps/billing-and-pricing/pricing}{\textcolor{brand}{developers.google.com}}
+\bibitem{openfreemap} OpenFreeMap. \href{https://openfreemap.org}{\textcolor{brand}{openfreemap.org}}
+\bibitem{supabase} Supabase, tarifs. \href{https://supabase.com/pricing}{\textcolor{brand}{supabase.com}}
+\bibitem{expo} Expo, tarifs EAS. \href{https://expo.dev/pricing}{\textcolor{brand}{expo.dev}}
+\bibitem{stores} iLab, « Publishing on the App Store and Google Play in 2026 ». \href{https://ilab.md/en/articles/publishing-on-the-app-store-and-google-play-in-2026-timelines-costs-and-7-hidden-requirements-that-could-derail-your-launch}{\textcolor{brand}{ilab.md}}
+\bibitem{playloc} Google Play Console, accès à la localisation en arrière-plan. \href{https://support.google.com/googleplay/android-developer/answer/9799150}{\textcolor{brand}{support.google.com}}
+\bibitem{mre} LesMRE, « Conduire au Maroc : code de la route et infractions ». \href{https://www.lesmre.com/fr/guides/conduire-maroc-code-route-infractions}{\textcolor{brand}{lesmre.com}}
+\bibitem{cmi} FNH, « Le CMI lance le Tap to mobile », 06/09/2024. \href{https://fnh.ma/article/actualites-marocaines/innovations-des-paiements-cmi-lance-le-tap-to-mobile}{\textcolor{brand}{fnh.ma}}
+\bibitem{sahl} Hespress, « Attijari Payment lance Sahl Pay », 11/05/2026. \href{https://fr.hespress.com/472979-attijari-payment-lance-sahl-pay-by-attijari-payment-une-solution-qui-transforme-un-smartphone-en-un-veritable-tpe.html}{\textcolor{brand}{fr.hespress.com}}
+\bibitem{kolonell} Kolonell, « Paiement en ligne au Maroc : CMI ou Stripe en 2026 ». \href{https://kolonell.com/fr/blog/paiement-en-ligne-pme-maroc-cmi-ou-stripe-2026}{\textcolor{brand}{kolonell.com}}
+\bibitem{vb} Morocco World News, « Startup Venture Building program », 12/2025. \href{https://www.moroccoworldnews.com/2025/12/272313/morocco-launches-startup-venture-building-program-to-back-innovation-and-scale-digital-entrepreneurship/}{\textcolor{brand}{moroccoworldnews.com}}
+\bibitem{osm} OpenStreetMap Foundation, Licence and Legal FAQ. \href{https://osmfoundation.org/wiki/Licence/Licence_and_Legal_FAQ}{\textcolor{brand}{osmfoundation.org}}
+\end{thebibliography}
+}
+
+\end{document}

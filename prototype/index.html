@@ -23,16 +23,18 @@
     }).addTo(map);
 
     // 3. Load your stations and put a pin for each one
-    fetch('stations.geojson')
+    fetch('../data/stations.geojson')
       .then(res => res.json())
       .then(data => {
         L.geoJSON(data, {
           onEachFeature: (feature, layer) => {
             const p = feature.properties;
+            const [lng, lat] = feature.geometry.coordinates;
+            const link = `https://www.google.com/maps/dir/?api=1&destination=${lng},${lat}&travelmode=walking`;
             layer.bindPopup(
               `<b>${p.hub}</b><br>` +
               `To: ${p.destinations.join(', ')}<br>` +
-              `${p.price_dh} Dh, ${p.hours === 'day' ? 'day only' : 'day and night'}`
+              `${p.price_dh} Dh, ${p.hours === 'day' ? 'day only' : 'day and night'}`+ '<br>' + <a href="${link}" target="_blank">Take me there</a>'
             );
           }
         }).addTo(map);
