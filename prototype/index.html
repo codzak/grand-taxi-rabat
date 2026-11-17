@@ -30,11 +30,12 @@
           onEachFeature: (feature, layer) => {
             const p = feature.properties;
             const [lng, lat] = feature.geometry.coordinates;
-            const link = `https://www.google.com/maps/dir/?api=1&destination=${lng},${lat}&travelmode=walking`;
+            const link = `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}&travelmode=walking`;
             layer.bindPopup(
               `<b>${p.hub}</b><br>` +
               `To: ${p.destinations.join(', ')}<br>` +
-              `${p.price_dh} Dh, ${p.hours === 'day' ? 'day only' : 'day and night'}`+ '<br>' + <a href="${link}" target="_blank">Take me there</a>'
+              `${p.price_dh} Dh, ${p.hours === 'day' ? 'day only' : 'day and night'}<br>` +
+              `<a href="${link}" target="_blank">Take me there</a>`
             );
           }
         }).addTo(map);
@@ -42,7 +43,6 @@
 
     // TODO (yours):
     // - a search box: type a destination, show only stands that go there
-    // - a "Take me there" link in the popup (Google Maps walking directions)
     // - color the pin grey if verified === false
   </script>
 </body>
