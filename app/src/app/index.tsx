@@ -5,8 +5,9 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { HOURS_LABEL, type Stand, allDestinations, matches, stands, walkingNavUrl, walkingWebUrl } from '@/stands';
 
-// OpenFreeMap: free vector tiles, no API key (see docs/ARCHITECTURE.md)
-const MAP_STYLE = 'https://tiles.openfreemap.org/styles/liberty';
+// OpenFreeMap: free vector tiles, no API key (see docs/ARCHITECTURE.md).
+// Positron, not Liberty: 55 layers instead of 111 and no 3D buildings, so it draws fast on cheap phones.
+const MAP_STYLE = 'https://tiles.openfreemap.org/styles/positron';
 
 // Rabat center, [lng, lat] order (MapLibre always wants longitude first)
 const RABAT_CENTER: [number, number] = [-6.84, 34.0];
@@ -113,7 +114,7 @@ export default function HomeScreen() {
 
       {/* Stand card (F3) */}
       {hub && picked && (
-        <View style={styles.card}>
+        <View style={[styles.card, { paddingBottom: insets.bottom + 16 }]}>
           <View style={styles.cardHead}>
             <Text style={styles.title}>{hub}</Text>
             <Pressable onPress={() => setHub(null)} accessibilityLabel="Fermer" hitSlop={12}>
