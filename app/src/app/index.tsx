@@ -61,7 +61,11 @@ export default function HomeScreen() {
       PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.ACCESS_COARSE_LOCATION);
     const ok = (await hasAccess()) || (await LocationManager.requestPermissions()) || (await hasAccess());
     if (!ok) {
-      Alert.alert('Localisation refusée', 'Autorisez la localisation pour vous voir sur la carte.');
+      // After one "Don't allow", Android may stop showing the popup, so offer the settings page.
+      Alert.alert('Localisation refusée', 'Autorisez la localisation pour vous voir sur la carte.', [
+        { text: 'Annuler', style: 'cancel' },
+        { text: 'Ouvrir les réglages', onPress: () => Linking.openSettings() },
+      ]);
       return;
     }
     setTracking(true);
