@@ -1,6 +1,14 @@
-import { Camera, GeoJSONSource, Layer, Map } from '@maplibre/maplibre-react-native';
-import { useMemo, useState } from 'react';
-import { Keyboard, Linking, Platform, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
+import {
+  Camera,
+  type CameraRef,
+  GeoJSONSource,
+  Layer,
+  type GeolocationPosition,
+  LocationManager,
+  Map,
+} from '@maplibre/maplibre-react-native';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { Alert, Keyboard, Linking, PermissionsAndroid, Platform, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { HOURS_LABEL, type Stand, allDestinations, matches, stands, walkingNavUrl, walkingWebUrl } from '@/stands';
@@ -18,6 +26,7 @@ const INK = '#12201C';
 const GREY_TEXT = '#5B6B66';
 const GREY_PIN = '#9AA7A2';
 const LIGHT_GREEN = '#E6F0ED';
+const BLUE = '#2F6FED'; // your position
 
 function openWalking(s: Stand) {
   // ponytail: iOS uses the web link for now; check walking mode there when we test on iOS.
@@ -31,6 +40,41 @@ export default function HomeScreen() {
   const [query, setQuery] = useState('');
   const [hub, setHub] = useState<string | null>(null);
   const [pickedId, setPickedId] = useState<string | null>(null);
+  const camera = useRef<CameraRef>(null);
+  const [tracking, setTracking] = useState(false);
+  const [me, setMe] = useState<[number, number] | null>(null);
+
+  // Follow the GPS only after the user asked once. Updates every 5 m, not every tick: less work on weak phones.
+  useEffect(() => {
+    if (!tracking) return;
+    const onPos = (p: GeolocationPosition) => setMe([p.coords.longitude, p.coords.latitude]);
+    LocationManager.setMinDisplacement(5);
+    LocationManager.addListener(onPos);
+    return () => LocationManager.removeListener(onPos);
+  }, [tracking]);
+
+  async function centerOnMe() {
+    // Approximate is enough for us. The library only says yes when BOTH are granted, and it asks for
+    // precise on every call, so check first and only ask when there is no access at all.
+    const hasAccess = () =>
+      Platform.OS === 'android' &&
+      PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.ACCESS_COARSE_LOCATION);
+    const ok = (await hasAccess()) || (await LocationManager.requestPermissions()) || (await hasAccess());
+    if (!ok) {
+      Alert.alert('Localisation refusée', 'Autorisez la localisation pour vous voir sur la carte.');
+      return;
+    }
+    setTracking(true);
+    const pos = await LocationManager.getCurrentPosition();
+    if (!pos) {
+      Alert.alert('Position introuvable', 'Activez le GPS puis réessayez.');
+      return;
+    }
+    const center: [number, number] = [pos.coords.longitude, pos.coords.latitude];
+    setMe(center);
+    // easeTo, not flyTo: a short, simple move is cheaper for weak phones.
+    camera.current?.easeTo({ center, zoom: 15, duration: 500 });
+  }
 
   // Pins carry a "match" flag so the layer can grey out the others (F2).
   const pins = useMemo<GeoJSON.FeatureCollection>(
@@ -61,7 +105,29 @@ export default function HomeScreen() {
   return (
     <View style={styles.container}>
       <Map style={styles.map} mapStyle={MAP_STYLE} onPress={() => setHub(null)}>
-        <Camera initialViewState={{ center: RABAT_CENTER, zoom: 12 }} />
+        <Camera ref={camera} initialViewState={{ center: RABAT_CENTER, zoom: 12 }} />
+        {/* Your position. Tested on the emulator: a source that starts empty (or mounts later) never draws,
+            so it always holds one point, hidden with opacity until we know where you are. */}
+        <GeoJSONSource
+          id="me"
+          data={{
+            type: 'Feature',
+            properties: { on: me !== null },
+            geometry: { type: 'Point', coordinates: me ?? RABAT_CENTER },
+          }}>
+          <Layer
+            id="me-dot"
+            type="circle"
+            paint={{
+              'circle-radius': 8,
+              'circle-color': BLUE,
+              'circle-stroke-width': 3,
+              'circle-stroke-color': '#FFFFFF',
+              'circle-opacity': ['case', ['get', 'on'], 1, 0],
+              'circle-stroke-opacity': ['case', ['get', 'on'], 1, 0],
+            }}
+          />
+        </GeoJSONSource>
         <GeoJSONSource
           id="stations"
           data={pins}
@@ -111,6 +177,22 @@ export default function HomeScreen() {
         </ScrollView>
         {noResult && <Text style={styles.empty}>Aucune station connue pour cette destination.</Text>}
       </View>
+
+      {/* Center on me. Hidden under the card, so only shown when no card is open. */}
+      {!hub && (
+        <Pressable
+          style={[styles.locate, { bottom: insets.bottom + 24 }]}
+          onPress={centerOnMe}
+          accessibilityRole="button"
+          accessibilityLabel="Me localiser">
+          {/* Crosshair icon from the mockup, drawn with Views (no SVG library needed) */}
+          <View style={styles.locateRing} />
+          <View style={[styles.tick, { top: 2, left: 23, width: 2, height: 6 }]} />
+          <View style={[styles.tick, { bottom: 2, left: 23, width: 2, height: 6 }]} />
+          <View style={[styles.tick, { left: 2, top: 23, width: 6, height: 2 }]} />
+          <View style={[styles.tick, { right: 2, top: 23, width: 6, height: 2 }]} />
+        </Pressable>
+      )}
 
       {/* Stand card (F3) */}
       {hub && picked && (
@@ -172,6 +254,19 @@ const styles = StyleSheet.create({
   chipOn: { backgroundColor: GREEN, borderColor: GREEN },
   chipText: { color: INK, fontSize: 14 },
   chipTextOn: { color: '#FFFFFF' },
+  locate: {
+    position: 'absolute',
+    right: 16,
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    backgroundColor: '#FFFFFF',
+    alignItems: 'center',
+    justifyContent: 'center',
+    elevation: 4,
+  },
+  locateRing: { width: 12, height: 12, borderRadius: 6, borderWidth: 2, borderColor: GREEN },
+  tick: { position: 'absolute', backgroundColor: GREEN, borderRadius: 1 },
   empty: { backgroundColor: '#FFFFFF', borderRadius: 16, padding: 12, color: INK },
   card: {
     position: 'absolute',
