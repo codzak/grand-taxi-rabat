@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<title>بطاقة محطة ميني بارك</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#0E5A4A;text-decoration:none}a:hover{color:#0A4236}
+</style>
+</helmet>
+<div dir="rtl" style="width: 390px; height: 844px; display: flex; flex-direction: column; background: #FFFFFF; font-family: 'IBM Plex Sans Arabic', system-ui, sans-serif; color: #12201C; overflow: hidden">
+
+<div style="position: relative; height: 200px; background: #DCE4DF; display: flex; align-items: center; justify-content: center">
+<span style="font-size: 14px; color: #3D4A46">[صورة المحطة]</span>
+<a href="Main.dc.html" aria-label="رجوع" style="position: absolute; right: 16px; top: 16px; width: 48px; height: 48px; border-radius: 24px; background: #FFFFFF; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(18,32,28,0.15)">
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#12201C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="transform: scaleX(-1)"><path d="M15 6l-6 6 6 6"></path></svg>
+</a>
+<button type="button" aria-label="إضافة إلى المفضلة" style="position: absolute; left: 16px; top: 16px; width: 48px; height: 48px; border-radius: 24px; border: 0; background: #FFFFFF; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(18,32,28,0.15)">
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#12201C" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z"></path></svg>
+</button>
+</div>
+
+<div style="flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 18px">
+<div style="display: flex; flex-direction: column; gap: 6px">
+<h1 style="margin: 0; font-family: 'IBM Plex Sans Arabic', sans-serif; font-weight: 700; font-size: 24px">ميني بارك، اليوسفية</h1>
+<p style="margin: 0; font-size: 15px; color: #5B6B66">علامة مميزة: [تُكمَل في عين المكان]</p>
+<span style="align-self: flex-start; font-size: 13px; background: #EEF0EF; color: #3D4A46; padding: 4px 10px; border-radius: 8px">لم يُتحقَّق منها في عين المكان</span>
+<sc-if value="{{offline}}" hint-placeholder-val="{{ false }}">
+<span role="status" style="align-self: flex-start; display: flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; background: #EEF0EF; color: #3D4A46; padding: 4px 10px; border-radius: 8px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#3D4A46" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 8.8a15 15 0 0120 0"></path><path d="M5 12.5a10 10 0 0114 0"></path><path d="M8.5 16.4a5 5 0 017 0"></path><path d="M12 20h.01"></path><path d="M3 3l18 18"></path></svg>غير متصل · بيانات [التاريخ]</span>
+</sc-if>
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 10px">
+<h2 style="margin: 0; font-family: 'IBM Plex Sans Arabic', sans-serif; font-weight: 600; font-size: 17px">اختر وجهتك</h2>
+<sc-for list="{{dests}}" as="d" hint-placeholder-count="4">
+<button type="button" onClick="{{d.pick}}" aria-pressed="{{d.pressed}}" style="display: flex; align-items: center; gap: 12px; text-align: start; width: 100%; padding: 14px; border-radius: 16px; font-family: inherit; color: #12201C; {{d.style}}">
+<span style="flex: 1; display: flex; flex-direction: column; gap: 3px">
+<span style="font-weight: 600; font-size: 16px">{{d.to}}</span>
+<span style="font-size: 14px; color: #5B6B66">{{d.hours}}</span>
+</span>
+<span style="font-weight: 600; font-size: 15px; background: #E6F0ED; color: #0E5A4A; padding: 4px 10px; border-radius: 8px">{{d.price}}</span>
+</button>
+</sc-for>
+</div>
+
+<sc-if value="{{note}}" hint-placeholder-val="{{ false }}">
+<p style="margin: 0; font-size: 14px; color: #3D4A46; background: #F3F6F4; padding: 12px; border-radius: 12px">{{note}}</p>
+</sc-if>
+
+<p style="margin: 0; font-size: 13px; color: #5B6B66">السعر للمقعد، معلومة غير رسمية. آخر تحقق: لم يتم بعد.</p>
+</div>
+
+<div style="padding: 12px 20px 20px; border-top: 1px solid #E3E8E5; display: flex; flex-direction: column; gap: 10px">
+<div style="display: flex; gap: 10px">
+<a href="https://www.google.com/maps/dir/?api=1&amp;destination=33.9930560,-6.8177405&amp;travelmode=walking" style="flex: 1; height: 52px; border-radius: 26px; background: {{brand}}; color: #FFFFFF; display: flex; align-items: center; justify-content: center; gap: 8px; font-weight: 600; font-size: 16px">
+<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="13" cy="4" r="2"></circle><path d="M10 21l2-6-3-3 1-5 4 3 3 1"></path></svg>
+اذهب مشياً
+</a>
+<a href="Ride.dc.html" style="flex: 1; height: 52px; border-radius: 26px; border: 2px solid {{brand}}; color: {{brand}}; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 16px; box-sizing: border-box">عرض المسار</a>
+</div>
+<a href="Report.dc.html" style="align-self: center; min-height: 48px; display: flex; align-items: center; font-size: 15px; font-weight: 500; padding: 0 16px">الإبلاغ عن خطأ</a>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"reseau":{"editor":"enum","options":["ok","hors-ligne"],"default":"ok"},"brand":{"editor":"color","default":"#0E5A4A","options":["#0E5A4A","#1F4E8C","#7A3E12"]},"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  constructor(props) { super(props); this.state = { pick: 2 }; }
+  renderVals() {
+    const brand = this.props.brand ?? '#0E5A4A';
+    const rows = [
+      { to: 'القامرة، أكواس', hours: 'ليلاً ونهاراً', price: '5 دراهم', note: 'مجموعة من 5 أو 6: يمكن للطاكسي أن يصل إلى "العمارات".' },
+      { to: 'وسط المدينة', hours: 'ليلاً ونهاراً', price: '5 دراهم', note: '' },
+      { to: 'أكدال، مسجد بدر', hours: 'ليلاً ونهاراً', price: '5 دراهم', note: '' },
+      { to: 'حي الرياض', hours: 'نهاراً فقط', price: '7 دراهم', note: 'الوجهة للتأكيد: ربما تمارة.' }
+    ];
+    const dests = rows.map((r, i) => {
+      const on = this.state.pick === i;
+      return { ...r, pressed: on ? 'true' : 'false', pick: () => this.setState({ pick: i }),
+        style: on ? 'border: 2px solid ' + brand + '; background: #F3F8F6' : 'border: 1px solid #E3E8E5; background: #FFFFFF' };
+    });
+    return { brand, dests, note: rows[this.state.pick].note, offline: this.props.reseau === 'hors-ligne' };
+  }
+}
+</script>
+</body>
+</html>

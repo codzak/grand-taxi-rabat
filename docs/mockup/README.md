@@ -12,5 +12,11 @@ These `.dc.html` files do not run in a normal browser (they need the canvas runt
 | `4-report.dc.html` | Report an error, all states |
 | `5-home-arabic.dc.html` | Home in Arabic, RTL |
 | `6-driver.dc.html` | Driver mode: full map, numbered drop-off pins, pop-up alert, totals |
+| `7-ride-passenger-arabic.dc.html` | Ride mode in Arabic, RTL (built from `3-ride-passenger`, same logic) |
+| `8-driver-arabic.dc.html` | Driver mode in Arabic, RTL (built from `6-driver`, same logic) |
+| `9-station-arabic.dc.html` | Stand card in Arabic, RTL (built from `2-station`, same logic) |
+| `10-report-arabic.dc.html` | Report an error in Arabic, RTL, all states (built from `4-report`, same logic) |
 
 Stops, distances and walking times in the mockup are examples, not real data.
+
+To rebuild an Arabic screen after changing its French source: `node to-arabic.js <french file> <arabic file>`. Add any new French text to the table in `to-arabic.js` first; the script stops if a text is missing.

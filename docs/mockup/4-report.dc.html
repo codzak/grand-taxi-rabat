@@ -44,6 +44,9 @@ a{color:#0E5A4A;text-decoration:none}a:hover{color:#0A4236}
 <input type="checkbox" style="width: 20px; height: 20px; margin-top: 1px; accent-color: #0E5A4A">Joindre ma position actuelle (envoyée une seule fois, jamais gardée avec mon identité)
 </label>
 <p style="margin: 0; font-size: 13px; color: #5B6B66">Aucun compte, aucun nom, aucun numéro demandé.</p>
+<sc-if value="{{isServerError}}" hint-placeholder-val="{{ false }}">
+<p role="alert" style="margin: 0; font-size: 14px; color: #B42318">Le serveur ne répond pas. Votre message est toujours là : réessayez.</p>
+</sc-if>
 <button type="button" onClick="{{send}}" aria-busy="{{busy}}" style="height: 52px; border-radius: 26px; border: 0; background: {{btnBg}}; color: #FFFFFF; font-family: inherit; font-weight: 600; font-size: 16px">{{btnLabel}}</button>
 </form>
 </sc-if>
@@ -61,19 +64,20 @@ a{color:#0E5A4A;text-decoration:none}a:hover{color:#0A4236}
 
 <sc-if value="{{isOffline}}" hint-placeholder-val="{{ false }}">
 <div style="flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; padding: 24px; text-align: center">
-<h2 style="margin: 0; font-family: 'Poppins', sans-serif; font-size: 20px">Pas de connexion</h2>
-<p style="margin: 0; font-size: 15px; color: #5B6B66">Votre signalement est gardé sur le téléphone et partira tout seul dès que le réseau revient.</p>
+<h2 style="margin: 0; font-family: 'Poppins', sans-serif; font-size: 20px">{{offlineTitle}}</h2>
+<p style="margin: 0; font-size: 15px; color: #5B6B66">{{offlineText}}</p>
 <a href="Main.dc.html" style="min-height: 48px; display: flex; align-items: center; font-weight: 600; font-size: 16px; padding: 0 16px">Retour à la carte</a>
 </div>
 </sc-if>
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"etat":{"editor":"enum","options":["vide","erreur","envoi","succes","hors-ligne"],"default":"vide"},"$preview":{"width":390,"height":844}}'>
+<script type="text/x-dc" data-dc-script data-props='{"etat":{"editor":"enum","options":["vide","erreur","envoi","succes","hors-ligne","echec-serveur","echec-garde"],"default":"vide"},"$preview":{"width":390,"height":844}}'>
 class Component extends DCLogic {
   constructor(props) { super(props); this.state = { local: null }; }
   renderVals() {
     const etat = this.state.local ?? this.props.etat ?? 'vide';
-    const isForm = etat === 'vide' || etat === 'erreur' || etat === 'envoi';
+    const isForm = etat === 'vide' || etat === 'erreur' || etat === 'envoi' || etat === 'echec-serveur';
+    const kept = etat === 'echec-garde'; // second server failure: the report waits on the phone
     return {
       types: [
         { v: 'absente', label: 'La station n\'existe plus' },
@@ -82,11 +86,15 @@ class Component extends DCLogic {
         { v: 'prix', label: 'Prix ou horaires faux' },
         { v: 'autre', label: 'Autre' }
       ].map((t) => ({ ...t, border: etat === 'erreur' ? '#B42318' : '#E3E8E5' })),
-      isForm, isError: etat === 'erreur', isSuccess: etat === 'succes', isOffline: etat === 'hors-ligne',
+      isForm, isError: etat === 'erreur', isSuccess: etat === 'succes', isOffline: etat === 'hors-ligne' || kept, isServerError: etat === 'echec-serveur',
+      offlineTitle: kept ? 'Envoi reporté' : 'Pas de connexion',
+      offlineText: kept
+        ? 'Le serveur ne répond toujours pas. Votre signalement est gardé sur le téléphone et sera renvoyé plus tard, sans rien à faire.'
+        : 'Votre signalement est gardé sur le téléphone et partira tout seul dès que le réseau revient.',
       btnBg: '#0E5A4A', // sending is shown by the label, not a faded colour (kept contrast above 4.5:1)
       busy: etat === 'envoi' ? 'true' : 'false',
-      btnLabel: etat === 'envoi' ? 'Envoi en cours…' : 'Envoyer',
-      send: () => this.setState({ local: 'succes' })
+      btnLabel: etat === 'envoi' ? 'Envoi en cours…' : (etat === 'echec-serveur' ? 'Réessayer' : 'Envoyer'),
+      send: () => this.setState({ local: etat === 'echec-serveur' ? 'echec-garde' : 'succes' })
     };
   }
 }

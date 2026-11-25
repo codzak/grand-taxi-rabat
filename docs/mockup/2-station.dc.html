@@ -31,6 +31,9 @@ a{color:#0E5A4A;text-decoration:none}a:hover{color:#0A4236}
 <h1 style="margin: 0; font-family: 'Poppins', sans-serif; font-weight: 700; font-size: 24px">Mini Parc, Youssoufia</h1>
 <p style="margin: 0; font-size: 15px; color: #5B6B66">Repère : [à compléter sur place]</p>
 <span style="align-self: flex-start; font-size: 13px; background: #EEF0EF; color: #3D4A46; padding: 4px 10px; border-radius: 8px">Non vérifiée sur place</span>
+<sc-if value="{{offline}}" hint-placeholder-val="{{ false }}">
+<span role="status" style="align-self: flex-start; display: flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; background: #EEF0EF; color: #3D4A46; padding: 4px 10px; border-radius: 8px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#3D4A46" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 8.8a15 15 0 0120 0"></path><path d="M5 12.5a10 10 0 0114 0"></path><path d="M8.5 16.4a5 5 0 017 0"></path><path d="M12 20h.01"></path><path d="M3 3l18 18"></path></svg>Hors ligne · données du [date]</span>
+</sc-if>
 </div>
 
 <div style="display: flex; flex-direction: column; gap: 10px">
@@ -65,7 +68,7 @@ Y aller à pied
 </div>
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"brand":{"editor":"color","default":"#0E5A4A","options":["#0E5A4A","#1F4E8C","#7A3E12"]},"$preview":{"width":390,"height":844}}'>
+<script type="text/x-dc" data-dc-script data-props='{"reseau":{"editor":"enum","options":["ok","hors-ligne"],"default":"ok"},"brand":{"editor":"color","default":"#0E5A4A","options":["#0E5A4A","#1F4E8C","#7A3E12"]},"$preview":{"width":390,"height":844}}'>
 class Component extends DCLogic {
   constructor(props) { super(props); this.state = { pick: 2 }; }
   renderVals() {
@@ -81,7 +84,7 @@ class Component extends DCLogic {
       return { ...r, pressed: on ? 'true' : 'false', pick: () => this.setState({ pick: i }),
         style: on ? 'border: 2px solid ' + brand + '; background: #F3F8F6' : 'border: 1px solid #E3E8E5; background: #FFFFFF' };
     });
-    return { brand, dests, note: rows[this.state.pick].note };
+    return { brand, dests, note: rows[this.state.pick].note, offline: this.props.reseau === 'hors-ligne' };
   }
 }
 </script>

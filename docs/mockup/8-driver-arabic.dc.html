@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<title>وضع السائق، الخريطة وتنبيهات النزول</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#7FD1B9;text-decoration:none}a:hover{color:#A8E3D1}
+</style>
+</helmet>
+<div dir="rtl" style="width: 390px; height: 844px; position: relative; overflow: hidden; background: #0D1513; color: #F2F5F4; font-family: 'IBM Plex Sans Arabic', system-ui, sans-serif">
+
+<svg width="390" height="844" viewBox="0 0 390 844" role="img" aria-label="خريطة الرحلة مع نقاط نزول الركاب" style="position: absolute; left: 0; top: 0">
+<rect width="390" height="844" fill="#131C19"></rect>
+<path d="M-10 230 L400 200" stroke="#22302C" stroke-width="12" fill="none"></path>
+<path d="M-10 470 L400 430" stroke="#22302C" stroke-width="16" fill="none"></path>
+<path d="M-10 640 L400 610" stroke="#22302C" stroke-width="10" fill="none"></path>
+<path d="M110 -10 L150 860" stroke="#22302C" stroke-width="12" fill="none"></path>
+<path d="M290 -10 L320 860" stroke="#22302C" stroke-width="10" fill="none"></path>
+<path d="M60 700 L120 560 L210 470 L270 360 L300 240 L340 120" stroke="#2F6B5C" stroke-width="8" fill="none" stroke-linecap="round" stroke-linejoin="round"></path>
+<path d="{{aheadPath}}" stroke="#3FA58A" stroke-width="8" fill="none" stroke-linecap="round" stroke-linejoin="round"></path>
+<path d="{{nextPath}}" stroke="#E8A317" stroke-width="10" fill="none" stroke-linecap="round" stroke-linejoin="round"></path>
+<sc-for list="{{marks}}" as="m" hint-placeholder-count="4">
+<circle cx="{{m.x}}" cy="{{m.y}}" r="16" fill="{{m.fill}}" stroke="#0D1513" stroke-width="3"></circle>
+<text x="{{m.x}}" y="{{m.ty}}" font-size="14" font-weight="700" text-anchor="middle" fill="#0D1513" font-family="IBM Plex Sans Arabic">{{m.n}}</text>
+</sc-for>
+<circle cx="{{taxiX}}" cy="{{taxiY}}" r="24" fill="#2F6FED" opacity="0.25"></circle>
+<circle cx="{{taxiX}}" cy="{{taxiY}}" r="11" fill="#2F6FED" stroke="#FFFFFF" stroke-width="3"></circle>
+</svg>
+
+<div style="position: absolute; left: 12px; right: 12px; top: 14px; display: flex; justify-content: space-between; align-items: center; background: rgba(13,21,19,0.92); border-radius: 16px; padding: 10px 14px">
+<div style="display: flex; flex-direction: column; gap: 2px">
+<span style="font-size: 15px; color: #A9B6B2">ميني بارك نحو أكدال</span>
+<span style="font-family: 'IBM Plex Sans Arabic', sans-serif; font-weight: 600; font-size: 17px">{{seatsLabel}}</span>
+</div>
+<div style="display: flex; flex-direction: column; align-items: flex-end; gap: 1px">
+<span style="font-size: 13px; color: #A9B6B2">رمز الركاب</span>
+<span style="font-family: 'IBM Plex Sans Arabic', sans-serif; font-weight: 700; font-size: 24px; letter-spacing: 4px" dir="ltr">4827</span>
+</div>
+</div>
+
+<sc-if value="{{popup}}" hint-placeholder-val="{{ true }}">
+<div role="alert" style="position: absolute; left: 12px; right: 12px; top: 96px; background: #E8A317; color: #1A1200; border-radius: 20px; padding: 16px 18px; box-shadow: 0 8px 24px rgba(0,0,0,0.45); display: flex; flex-direction: column; gap: 6px">
+<div style="display: flex; align-items: center; gap: 8px">
+<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1A1200" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 10-12 0c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.7 21a2 2 0 01-3.4 0"></path></svg>
+<span style="font-size: 16px; font-weight: 700">نزول بعد {{next.dist}}</span>
+</div>
+<span style="font-family: 'IBM Plex Sans Arabic', sans-serif; font-weight: 700; font-size: 26px; line-height: 1.15">{{next.name}}</span>
+<span style="font-size: 17px; font-weight: 600">{{next.people}} · {{next.pay}}</span>
+</div>
+</sc-if>
+
+<div style="position: absolute; left: 0; right: 0; bottom: 0; background: #0D1513; border-radius: 24px 24px 0 0; padding: 14px 16px 12px; display: flex; flex-direction: column; gap: 10px; box-shadow: 0 -6px 20px rgba(0,0,0,0.4)">
+<sc-if value="{{offline}}" hint-placeholder-val="{{ false }}">
+<div role="status" style="display: flex; align-items: center; gap: 10px; background: #16211E; border: 1px solid #3A4A45; border-radius: 14px; padding: 10px 12px">
+<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#F2F5F4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="M2 8.8a15 15 0 0120 0"></path><path d="M5 12.5a10 10 0 0114 0"></path><path d="M8.5 16.4a5 5 0 017 0"></path><path d="M12 20h.01"></path><path d="M3 3l18 18"></path></svg>
+<span style="font-size: 15px; font-weight: 500">لا توجد شبكة. نقاط النزول المستلمة تبقى على الخريطة، والجديدة ستصل عند عودة الشبكة.</span>
+</div>
+</sc-if>
+<sc-if value="{{hasNext}}" hint-placeholder-val="{{ true }}">
+<div style="display: flex; gap: 8px; overflow-x: auto">
+<sc-for list="{{chips}}" as="c" hint-placeholder-count="3">
+<button type="button" onClick="{{c.open}}" aria-label="{{c.label}}" style="flex: none; min-height: 52px; display: flex; align-items: center; gap: 8px; background: #16211E; border: 1px solid #2A3A35; border-radius: 16px; padding: 8px 14px; font-family: inherit; color: #F2F5F4">
+<span style="width: 28px; height: 28px; border-radius: 14px; background: {{c.fill}}; color: #0D1513; font-weight: 700; font-size: 15px; display: flex; align-items: center; justify-content: center">{{c.n}}</span>
+<span style="font-size: 15px; font-weight: 600">{{c.short}}</span>
+<span style="font-size: 15px; color: #A9B6B2">{{c.payShort}}</span>
+</button>
+</sc-for>
+</div>
+</sc-if>
+<sc-if value="{{allClear}}" hint-placeholder-val="{{ false }}">
+<p style="margin: 0; font-size: 17px; font-weight: 600">نزل جميع الركاب.</p>
+</sc-if>
+<div style="display: flex; gap: 10px">
+<button type="button" onClick="{{toggleVoice}}" aria-pressed="{{voicePressed}}" aria-label="الإعلان الصوتي" style="width: 60px; height: 60px; border-radius: 30px; border: 2px solid #3FA58A; background: {{voiceBg}}; display: flex; align-items: center; justify-content: center; flex: none">
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="{{voiceInk}}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5L6 9H2v6h4l5 4z"></path><path d="M15.5 8.5a5 5 0 010 7"></path><path d="M19 5a10 10 0 010 14"></path></svg>
+</button>
+<button type="button" onClick="{{mainAction}}" style="flex: 1; min-width: 0; height: 60px; border-radius: 30px; border: 0; background: #3FA58A; color: #0D1513; font-family: 'IBM Plex Sans Arabic', sans-serif; font-weight: 700; font-size: 17px; padding: 0 16px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{mainLabel}}</button>
+</div>
+<button type="button" onClick="{{advance}}" style="height: 36px; border: 0; background: transparent; color: #A9B6B2; font-family: inherit; font-size: 13px; text-decoration: underline">تجربة: تقدّم الطاكسي (في الواقع، يُؤكَّد النزول تلقائياً عندما يتوقف الطاكسي عند النقطة)</button>
+</div>
+
+<sc-if value="{{sheetOpen}}" hint-placeholder-val="{{ false }}">
+<div style="position: absolute; inset: 0; background: rgba(0,0,0,0.55)" onClick="{{closeSheet}}" aria-hidden="true"></div>
+<div role="dialog" aria-modal="true" aria-labelledby="sheetTitle" style="position: absolute; left: 0; right: 0; bottom: 0; background: #16211E; border-radius: 24px 24px 0 0; padding: 12px 16px 16px; display: flex; flex-direction: column; gap: 12px; box-shadow: 0 -8px 24px rgba(0,0,0,0.5)">
+<div style="width: 40px; height: 4px; border-radius: 2px; background: #3A4A45; margin: 0 auto 4px"></div>
+<div style="display: flex; align-items: center; gap: 12px">
+<span style="flex: none; width: 36px; height: 36px; border-radius: 18px; background: {{sheet.fill}}; color: #0D1513; font-weight: 700; font-size: 17px; display: flex; align-items: center; justify-content: center">{{sheet.n}}</span>
+<h2 id="sheetTitle" style="margin: 0; font-family: 'IBM Plex Sans Arabic', sans-serif; font-weight: 700; font-size: 22px; line-height: 1.2">{{sheet.name}}</h2>
+</div>
+<span style="font-size: 17px; font-weight: 600">{{sheet.people}} · {{sheet.pay}}</span>
+<sc-if value="{{sheet.mixed}}" hint-placeholder-val="{{ false }}">
+<span style="font-size: 13px; color: #A9B6B2">[للتقرير: هل تعرض البطاقة «مختلط» أم التفاصيل لكل راكب؟]</span>
+</sc-if>
+<button type="button" onClick="{{dropNow}}" style="height: 60px; border-radius: 30px; border: 0; background: #3FA58A; color: #0D1513; font-family: 'IBM Plex Sans Arabic', sans-serif; font-weight: 700; font-size: 17px">تم النزول الآن</button>
+<button type="button" onClick="{{removeStop}}" style="height: 60px; border-radius: 30px; border: 2px solid #A9B6B2; background: transparent; color: #F2F5F4; font-family: 'IBM Plex Sans Arabic', sans-serif; font-weight: 600; font-size: 17px">حذف هذه النقطة</button>
+<button type="button" onClick="{{closeSheet}}" style="height: 48px; border: 0; background: transparent; color: #A9B6B2; font-family: inherit; font-weight: 600; font-size: 15px">إلغاء</button>
+<span style="font-size: 13px; color: #A9B6B2; text-align: center">[للتقرير: هل نتيح «إلغاء» لبضع ثوانٍ بعد الاختيار؟]</span>
+</div>
+</sc-if>
+
+<sc-if value="{{waiting}}" hint-placeholder-val="{{ false }}">
+<div style="position: absolute; inset: 0; background: #0D1513; display: flex; flex-direction: column; align-items: center; padding: 28px 24px 16px; gap: 14px; text-align: center">
+<span style="font-size: 17px; color: #A9B6B2">ميني بارك نحو أكدال</span>
+<h1 style="margin: 0; font-family: 'IBM Plex Sans Arabic', sans-serif; font-weight: 700; font-size: 24px">في انتظار الركاب</h1>
+<span style="font-size: 17px; font-weight: 600">0 ركاب على المتن من أصل 6</span>
+<span style="margin-top: 18px; font-size: 15px; color: #A9B6B2">رمز الرحلة</span>
+<span dir="ltr" aria-label="الرمز 4 8 2 7" style="font-family: 'IBM Plex Sans Arabic', sans-serif; font-weight: 700; font-size: 72px; line-height: 1; letter-spacing: 14px; margin-right: -14px">4827</span>
+<div style="width: 220px; height: 220px; border-radius: 20px; background: #F2F5F4; color: #12201C; display: flex; align-items: center; justify-content: center; font-size: 15px; margin-top: 8px">[رمز QR للرحلة]</div>
+<p style="margin: 0; max-width: 300px; font-size: 15px; color: #A9B6B2">يُدخل الركاب هذا الرمز أو يمسحون رمز QR في التطبيق لإرسال نقطة نزولهم إليك.</p>
+<button type="button" onClick="{{join}}" style="margin-top: auto; height: 36px; border: 0; background: transparent; color: #A9B6B2; font-family: inherit; font-size: 13px; text-decoration: underline">تجربة: انضمام الركاب</button>
+</div>
+</sc-if>
+
+<sc-if value="{{ended}}" hint-placeholder-val="{{ false }}">
+<div role="status" style="position: absolute; inset: 0; background: #0D1513; display: flex; flex-direction: column; padding: 40px 24px 16px; gap: 20px">
+<h1 style="margin: 0; font-family: 'IBM Plex Sans Arabic', sans-serif; font-weight: 700; font-size: 26px">انتهت الرحلة</h1>
+<div style="display: flex; gap: 12px">
+<div style="flex: 1; background: #16211E; border-radius: 16px; padding: 16px; display: flex; flex-direction: column; gap: 4px">
+<span style="font-size: 15px; color: #A9B6B2">نقداً</span>
+<span style="font-family: 'IBM Plex Sans Arabic', sans-serif; font-weight: 700; font-size: 36px">{{cashTotal}}</span>
+</div>
+<div style="flex: 1; background: #16211E; border-radius: 16px; padding: 16px; display: flex; flex-direction: column; gap: 4px">
+<span style="font-size: 15px; color: #A9B6B2">بطاقة</span>
+<span style="font-family: 'IBM Plex Sans Arabic', sans-serif; font-weight: 700; font-size: 36px">{{cardTotal}}</span>
+</div>
+</div>
+<span style="font-size: 15px; color: #A9B6B2">{{droppedLabel}}</span>
+<p style="margin: 0; font-size: 15px">حُذفت جميع بيانات الرحلة: نقاط النزول والرمز والمواقع.</p>
+<button type="button" onClick="{{newTrip}}" style="margin-top: auto; height: 60px; border-radius: 30px; border: 0; background: #3FA58A; color: #0D1513; font-family: 'IBM Plex Sans Arabic', sans-serif; font-weight: 700; font-size: 17px">رحلة جديدة</button>
+</div>
+</sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"reseau":{"editor":"enum","options":["ok","hors-ligne"],"default":"ok"},"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  constructor(props) { super(props); this.state = { joined: false, pos: 0, voice: true, status: {}, sheet: null, ended: false }; }
+  renderVals() {
+    const route = [[60, 700], [90, 630], [120, 560], [165, 515], [210, 470], [240, 415], [270, 360], [285, 300], [300, 240], [320, 180], [340, 120]];
+    // Example data: one row per stop, as shared by passengers
+    const drops = [
+      { id: 'a', at: 2, name: 'شارع المسيرة', short: 'المسيرة', n: 1, pay: 'نقداً 5 دراهم', payShort: 'نقداً', cash: 5, card: 0 },
+      { id: 'b', at: 5, name: 'نقطة محددة بعد الدوّار', short: 'نقطة محددة', n: 1, pay: 'بطاقة 5 دراهم', payShort: 'بطاقة', cash: 0, card: 5 },
+      { id: 'c', at: 8, name: 'مسجد بدر', short: 'مسجد بدر', n: 2, pay: '1 نقداً، 1 بطاقة', payShort: 'مختلط', cash: 5, card: 5, mixed: true },
+      { id: 'd', at: 10, name: 'أكدال (المحطة الأخيرة)', short: 'أكدال', n: 2, pay: 'نقداً 10 دراهم', payShort: 'نقداً', cash: 10, card: 0 }
+    ];
+    const st = this.state;
+    const pos = st.pos;
+    const people = (n) => n === 1 ? 'راكب واحد' : n + ' ركاب';
+    // A stop is done when the driver confirms it, or on its own when the taxi reaches it (auto-confirm)
+    const statusOf = (d) => st.status[d.id] || (pos >= d.at ? 'done' : 'open');
+    const upcoming = drops.filter((d) => statusOf(d) === 'open');
+    const doneDrops = drops.filter((d) => statusOf(d) === 'done');
+    const next = upcoming[0];
+    const path = (a, b) => route.slice(a, b + 1).map((p, i) => (i ? 'L' : 'M') + p[0] + ' ' + p[1]).join(' ');
+    const lastOpen = upcoming.length ? upcoming[upcoming.length - 1].at : pos;
+    const onboard = upcoming.reduce((a, d) => a + d.n, 0);
+    const dist = next ? Math.max(0, next.at - pos) * 150 : 0;
+    const setStatus = (id, s) => this.setState({ status: { ...st.status, [id]: s }, sheet: null });
+    const sheetDrop = drops.find((d) => d.id === st.sheet);
+    const v = st.voice;
+    const sum = (k) => doneDrops.reduce((a, d) => a + d[k], 0) + ' درهم';
+    const dropped = doneDrops.reduce((a, d) => a + d.n, 0);
+    return {
+      waiting: !st.joined, ended: st.ended,
+      aheadPath: upcoming.length ? path(pos, lastOpen) : 'M0 0',
+      nextPath: next ? path(pos, next.at) : 'M0 0',
+      marks: upcoming.map((d, i) => ({ x: route[d.at][0], y: route[d.at][1], ty: route[d.at][1] + 5, n: String(i + 1), fill: i === 0 ? '#E8A317' : '#3FA58A' })),
+      chips: upcoming.map((d, i) => ({ n: String(i + 1), short: d.short, payShort: d.payShort, fill: i === 0 ? '#E8A317' : '#3FA58A',
+        label: 'النقطة ' + (i + 1) + '، ' + d.name + '، ' + people(d.n) + '، ' + d.pay + '. اضغط للتصحيح.',
+        open: () => this.setState({ sheet: d.id }) })),
+      taxiX: route[pos][0], taxiY: route[pos][1],
+      next: next ? { name: next.name, people: people(next.n), pay: next.pay, dist: dist >= 1000 ? (dist / 1000).toFixed(1).replace('.', ',') + ' كلم' : dist + ' م' } : { name: '', people: '', pay: '', dist: '' },
+      popup: st.joined && !st.ended && !sheetDrop && !!next && next.at - pos <= 2,
+      hasNext: !!next, allClear: !next, offline: this.props.reseau === 'hors-ligne',
+      seatsLabel: people(onboard) + ' على المتن من أصل 6',
+      mainLabel: next ? 'تم النزول · ' + next.short : 'إنهاء الرحلة',
+      mainAction: () => next ? setStatus(next.id, 'done') : this.setState({ ended: true }),
+      sheetOpen: !!sheetDrop,
+      sheet: sheetDrop
+        ? { name: sheetDrop.name, people: people(sheetDrop.n), pay: sheetDrop.pay, mixed: !!sheetDrop.mixed, n: String(upcoming.indexOf(sheetDrop) + 1), fill: upcoming[0] === sheetDrop ? '#E8A317' : '#3FA58A' }
+        : { name: '', people: '', pay: '', mixed: false, n: '', fill: '#3FA58A' },
+      dropNow: () => sheetDrop && setStatus(sheetDrop.id, 'done'),
+      removeStop: () => sheetDrop && setStatus(sheetDrop.id, 'removed'),
+      closeSheet: () => this.setState({ sheet: null }),
+      cashTotal: sum('cash'), cardTotal: sum('card'),
+      droppedLabel: dropped === 1 ? 'نزل راكب واحد' : 'نزل ' + dropped + ' ركاب',
+      join: () => this.setState({ joined: true }),
+      advance: () => this.setState({ pos: Math.min(pos + 1, route.length - 1) }),
+      newTrip: () => this.setState({ joined: false, pos: 0, status: {}, sheet: null, ended: false }),
+      voicePressed: v ? 'true' : 'false', voiceBg: v ? '#3FA58A' : 'transparent', voiceInk: v ? '#0D1513' : '#3FA58A',
+      toggleVoice: () => this.setState({ voice: !v })
+    };
+  }
+}
+</script>
+</body>
+</html>
