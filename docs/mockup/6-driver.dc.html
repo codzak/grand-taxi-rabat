@@ -36,12 +36,12 @@ a{color:#7FD1B9;text-decoration:none}a:hover{color:#A8E3D1}
 
 <div style="position: absolute; left: 12px; right: 12px; top: 14px; display: flex; justify-content: space-between; align-items: center; background: rgba(13,21,19,0.92); border-radius: 16px; padding: 10px 14px">
 <div style="display: flex; flex-direction: column; gap: 2px">
-<span style="font-size: 13px; color: #A9B6B2">Mini Parc vers Agdal</span>
+<span style="font-size: 15px; color: #A9B6B2">Mini Parc vers Agdal</span>
 <span style="font-family: 'Poppins', sans-serif; font-weight: 600; font-size: 17px">{{seatsLabel}}</span>
 </div>
 <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 1px">
-<span style="font-size: 12px; color: #A9B6B2">Code passagers</span>
-<span style="font-family: 'Poppins', sans-serif; font-weight: 700; font-size: 24px; letter-spacing: 4px; color: #E8A317">4827</span>
+<span style="font-size: 13px; color: #A9B6B2">Code passagers</span>
+<span style="font-family: 'Poppins', sans-serif; font-weight: 700; font-size: 24px; letter-spacing: 4px">4827</span>
 </div>
 </div>
 
@@ -56,65 +56,144 @@ a{color:#7FD1B9;text-decoration:none}a:hover{color:#A8E3D1}
 </div>
 </sc-if>
 
-<div style="position: absolute; left: 0; right: 0; bottom: 0; background: #0D1513; border-radius: 24px 24px 0 0; padding: 14px 16px 16px; display: flex; flex-direction: column; gap: 10px; box-shadow: 0 -6px 20px rgba(0,0,0,0.4)">
+<div style="position: absolute; left: 0; right: 0; bottom: 0; background: #0D1513; border-radius: 24px 24px 0 0; padding: 14px 16px 12px; display: flex; flex-direction: column; gap: 10px; box-shadow: 0 -6px 20px rgba(0,0,0,0.4)">
+<sc-if value="{{offline}}" hint-placeholder-val="{{ false }}">
+<div role="status" style="display: flex; align-items: center; gap: 10px; background: #16211E; border: 1px solid #3A4A45; border-radius: 14px; padding: 10px 12px">
+<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#F2F5F4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="M2 8.8a15 15 0 0120 0"></path><path d="M5 12.5a10 10 0 0114 0"></path><path d="M8.5 16.4a5 5 0 017 0"></path><path d="M12 20h.01"></path><path d="M3 3l18 18"></path></svg>
+<span style="font-size: 15px; font-weight: 500">Pas de réseau. Les déposes reçues restent sur la carte, les nouvelles arriveront au retour du réseau.</span>
+</div>
+</sc-if>
 <sc-if value="{{hasNext}}" hint-placeholder-val="{{ true }}">
 <div style="display: flex; gap: 8px; overflow-x: auto">
 <sc-for list="{{chips}}" as="c" hint-placeholder-count="3">
-<div style="flex: none; display: flex; align-items: center; gap: 8px; background: #16211E; border-radius: 14px; padding: 8px 12px">
-<span style="width: 24px; height: 24px; border-radius: 12px; background: {{c.fill}}; color: #0D1513; font-weight: 700; font-size: 13px; display: flex; align-items: center; justify-content: center">{{c.n}}</span>
-<span style="font-size: 14px; font-weight: 500">{{c.short}}</span>
-<span style="font-size: 13px; color: #A9B6B2">{{c.payShort}}</span>
-</div>
+<button type="button" onClick="{{c.open}}" aria-label="{{c.label}}" style="flex: none; min-height: 52px; display: flex; align-items: center; gap: 8px; background: #16211E; border: 1px solid #2A3A35; border-radius: 16px; padding: 8px 14px; font-family: inherit; color: #F2F5F4">
+<span style="width: 28px; height: 28px; border-radius: 14px; background: {{c.fill}}; color: #0D1513; font-weight: 700; font-size: 15px; display: flex; align-items: center; justify-content: center">{{c.n}}</span>
+<span style="font-size: 15px; font-weight: 600">{{c.short}}</span>
+<span style="font-size: 15px; color: #A9B6B2">{{c.payShort}}</span>
+</button>
 </sc-for>
 </div>
 </sc-if>
-<sc-if value="{{done}}" hint-placeholder-val="{{ false }}">
-<p style="margin: 0; font-size: 17px; font-weight: 600">Tous les passagers sont descendus. Encaissé : {{cashTotal}} en espèces, {{cardTotal}} par carte.</p>
+<sc-if value="{{allClear}}" hint-placeholder-val="{{ false }}">
+<p style="margin: 0; font-size: 17px; font-weight: 600">Tous les passagers sont descendus.</p>
 </sc-if>
 <div style="display: flex; gap: 10px">
 <button type="button" onClick="{{toggleVoice}}" aria-pressed="{{voicePressed}}" aria-label="Annonce vocale" style="width: 60px; height: 60px; border-radius: 30px; border: 2px solid #3FA58A; background: {{voiceBg}}; display: flex; align-items: center; justify-content: center; flex: none">
 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="{{voiceInk}}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5L6 9H2v6h4l5 4z"></path><path d="M15.5 8.5a5 5 0 010 7"></path><path d="M19 5a10 10 0 010 14"></path></svg>
 </button>
-<button type="button" onClick="{{advance}}" style="flex: 1; height: 60px; border-radius: 30px; border: 0; background: #3FA58A; color: #0D1513; font-family: 'Poppins', sans-serif; font-weight: 700; font-size: 17px">{{advanceLabel}}</button>
+<button type="button" onClick="{{mainAction}}" style="flex: 1; min-width: 0; height: 60px; border-radius: 30px; border: 0; background: #3FA58A; color: #0D1513; font-family: 'Poppins', sans-serif; font-weight: 700; font-size: 17px; padding: 0 16px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{mainLabel}}</button>
 </div>
-<p style="margin: 0; font-size: 12px; color: #A9B6B2; text-align: center">Démo : le bouton fait avancer le taxi. En vrai, l'alerte s'affiche seule à 300 m et la dépose se valide quand le taxi s'arrête au point.</p>
+<button type="button" onClick="{{advance}}" style="height: 36px; border: 0; background: transparent; color: #A9B6B2; font-family: inherit; font-size: 13px; text-decoration: underline">Démo : faire avancer le taxi (en vrai, la dépose se valide seule quand le taxi s'arrête au point)</button>
 </div>
+
+<sc-if value="{{sheetOpen}}" hint-placeholder-val="{{ false }}">
+<div style="position: absolute; inset: 0; background: rgba(0,0,0,0.55)" onClick="{{closeSheet}}" aria-hidden="true"></div>
+<div role="dialog" aria-modal="true" aria-labelledby="sheetTitle" style="position: absolute; left: 0; right: 0; bottom: 0; background: #16211E; border-radius: 24px 24px 0 0; padding: 12px 16px 16px; display: flex; flex-direction: column; gap: 12px; box-shadow: 0 -8px 24px rgba(0,0,0,0.5)">
+<div style="width: 40px; height: 4px; border-radius: 2px; background: #3A4A45; margin: 0 auto 4px"></div>
+<div style="display: flex; align-items: center; gap: 12px">
+<span style="flex: none; width: 36px; height: 36px; border-radius: 18px; background: {{sheet.fill}}; color: #0D1513; font-weight: 700; font-size: 17px; display: flex; align-items: center; justify-content: center">{{sheet.n}}</span>
+<h2 id="sheetTitle" style="margin: 0; font-family: 'Poppins', sans-serif; font-weight: 700; font-size: 22px; line-height: 1.2">{{sheet.name}}</h2>
+</div>
+<span style="font-size: 17px; font-weight: 600">{{sheet.people}} · {{sheet.pay}}</span>
+<sc-if value="{{sheet.mixed}}" hint-placeholder-val="{{ false }}">
+<span style="font-size: 13px; color: #A9B6B2">[à décider : la puce affiche « Mixte » ou le détail par passager ?]</span>
+</sc-if>
+<button type="button" onClick="{{dropNow}}" style="height: 60px; border-radius: 30px; border: 0; background: #3FA58A; color: #0D1513; font-family: 'Poppins', sans-serif; font-weight: 700; font-size: 17px">Déposé maintenant</button>
+<button type="button" onClick="{{removeStop}}" style="height: 60px; border-radius: 30px; border: 2px solid #A9B6B2; background: transparent; color: #F2F5F4; font-family: 'Poppins', sans-serif; font-weight: 600; font-size: 17px">Retirer cet arrêt</button>
+<button type="button" onClick="{{closeSheet}}" style="height: 48px; border: 0; background: transparent; color: #A9B6B2; font-family: inherit; font-weight: 600; font-size: 15px">Annuler</button>
+<span style="font-size: 13px; color: #A9B6B2; text-align: center">[à décider : proposer « Annuler » quelques secondes après un choix ?]</span>
+</div>
+</sc-if>
+
+<sc-if value="{{waiting}}" hint-placeholder-val="{{ false }}">
+<div style="position: absolute; inset: 0; background: #0D1513; display: flex; flex-direction: column; align-items: center; padding: 28px 24px 16px; gap: 14px; text-align: center">
+<span style="font-size: 17px; color: #A9B6B2">Mini Parc vers Agdal</span>
+<h1 style="margin: 0; font-family: 'Poppins', sans-serif; font-weight: 700; font-size: 24px">En attente des passagers</h1>
+<span style="font-size: 17px; font-weight: 600">0 passager à bord sur 6</span>
+<span style="margin-top: 18px; font-size: 15px; color: #A9B6B2">Code du trajet</span>
+<span aria-label="Code 4 8 2 7" style="font-family: 'Poppins', sans-serif; font-weight: 700; font-size: 72px; line-height: 1; letter-spacing: 14px; margin-right: -14px">4827</span>
+<div style="width: 220px; height: 220px; border-radius: 20px; background: #F2F5F4; color: #12201C; display: flex; align-items: center; justify-content: center; font-size: 15px; margin-top: 8px">[QR du trajet]</div>
+<p style="margin: 0; max-width: 300px; font-size: 15px; color: #A9B6B2">Les passagers entrent ce code ou scannent le QR dans l'application pour vous envoyer leur arrêt.</p>
+<button type="button" onClick="{{join}}" style="margin-top: auto; height: 36px; border: 0; background: transparent; color: #A9B6B2; font-family: inherit; font-size: 13px; text-decoration: underline">Démo : les passagers rejoignent</button>
+</div>
+</sc-if>
+
+<sc-if value="{{ended}}" hint-placeholder-val="{{ false }}">
+<div role="status" style="position: absolute; inset: 0; background: #0D1513; display: flex; flex-direction: column; padding: 40px 24px 16px; gap: 20px">
+<h1 style="margin: 0; font-family: 'Poppins', sans-serif; font-weight: 700; font-size: 26px">Trajet terminé</h1>
+<div style="display: flex; gap: 12px">
+<div style="flex: 1; background: #16211E; border-radius: 16px; padding: 16px; display: flex; flex-direction: column; gap: 4px">
+<span style="font-size: 15px; color: #A9B6B2">Espèces</span>
+<span style="font-family: 'Poppins', sans-serif; font-weight: 700; font-size: 36px">{{cashTotal}}</span>
+</div>
+<div style="flex: 1; background: #16211E; border-radius: 16px; padding: 16px; display: flex; flex-direction: column; gap: 4px">
+<span style="font-size: 15px; color: #A9B6B2">Carte</span>
+<span style="font-family: 'Poppins', sans-serif; font-weight: 700; font-size: 36px">{{cardTotal}}</span>
+</div>
+</div>
+<span style="font-size: 15px; color: #A9B6B2">{{droppedLabel}}</span>
+<p style="margin: 0; font-size: 15px">Toutes les données du trajet sont effacées : déposes, code et positions.</p>
+<button type="button" onClick="{{newTrip}}" style="margin-top: auto; height: 60px; border-radius: 30px; border: 0; background: #3FA58A; color: #0D1513; font-family: 'Poppins', sans-serif; font-weight: 700; font-size: 17px">Nouveau trajet</button>
+</div>
+</sc-if>
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+<script type="text/x-dc" data-dc-script data-props='{"reseau":{"editor":"enum","options":["ok","hors-ligne"],"default":"ok"},"$preview":{"width":390,"height":844}}'>
 class Component extends DCLogic {
-  constructor(props) { super(props); this.state = { pos: 0, voice: true }; }
+  constructor(props) { super(props); this.state = { joined: false, pos: 0, voice: true, status: {}, sheet: null, ended: false }; }
   renderVals() {
     const route = [[60, 700], [90, 630], [120, 560], [165, 515], [210, 470], [240, 415], [270, 360], [285, 300], [300, 240], [320, 180], [340, 120]];
+    // Example data: one row per stop, as shared by passengers
     const drops = [
-      { at: 2, name: 'Avenue Al Massira', short: 'Al Massira', people: '1 passager', n: 1, pay: 'Espèces 5 Dh', payShort: 'Espèces', cash: 5, card: 0 },
-      { at: 5, name: 'Point précis après le rond-point', short: 'Point précis', people: '1 passager', n: 1, pay: 'Carte 5 Dh', payShort: 'Carte', cash: 0, card: 5 },
-      { at: 8, name: 'Masjid Badr', short: 'Masjid Badr', people: '2 passagers', n: 2, pay: '1 espèces, 1 carte', payShort: 'Mixte', cash: 5, card: 5 },
-      { at: 10, name: 'Agdal (terminus)', short: 'Agdal', people: '2 passagers', n: 2, pay: 'Espèces 10 Dh', payShort: 'Espèces', cash: 10, card: 0 }
+      { id: 'a', at: 2, name: 'Avenue Al Massira', short: 'Al Massira', n: 1, pay: 'Espèces 5 Dh', payShort: 'Espèces', cash: 5, card: 0 },
+      { id: 'b', at: 5, name: 'Point précis après le rond-point', short: 'Point précis', n: 1, pay: 'Carte 5 Dh', payShort: 'Carte', cash: 0, card: 5 },
+      { id: 'c', at: 8, name: 'Masjid Badr', short: 'Masjid Badr', n: 2, pay: '1 espèces, 1 carte', payShort: 'Mixte', cash: 5, card: 5, mixed: true },
+      { id: 'd', at: 10, name: 'Agdal (terminus)', short: 'Agdal', n: 2, pay: 'Espèces 10 Dh', payShort: 'Espèces', cash: 10, card: 0 }
     ];
-    const pos = this.state.pos;
-    const upcoming = drops.filter((d) => d.at > pos || (d.at === pos && pos === 0));
+    const st = this.state;
+    const pos = st.pos;
+    const people = (n) => n === 1 ? '1 passager' : n + ' passagers';
+    // A stop is done when the driver confirms it, or on its own when the taxi reaches it (auto-confirm)
+    const statusOf = (d) => st.status[d.id] || (pos >= d.at ? 'done' : 'open');
+    const upcoming = drops.filter((d) => statusOf(d) === 'open');
+    const doneDrops = drops.filter((d) => statusOf(d) === 'done');
     const next = upcoming[0];
     const path = (a, b) => route.slice(a, b + 1).map((p, i) => (i ? 'L' : 'M') + p[0] + ' ' + p[1]).join(' ');
-    const last = drops[drops.length - 1].at;
+    const lastOpen = upcoming.length ? upcoming[upcoming.length - 1].at : pos;
     const onboard = upcoming.reduce((a, d) => a + d.n, 0);
-    const doneDrops = drops.filter((d) => d.at <= pos && pos > 0);
-    const dist = next ? ((next.at - pos) * 150) : 0;
-    const v = this.state.voice;
+    const dist = next ? Math.max(0, next.at - pos) * 150 : 0;
+    const setStatus = (id, s) => this.setState({ status: { ...st.status, [id]: s }, sheet: null });
+    const sheetDrop = drops.find((d) => d.id === st.sheet);
+    const v = st.voice;
+    const sum = (k) => doneDrops.reduce((a, d) => a + d[k], 0) + ' Dh';
+    const dropped = doneDrops.reduce((a, d) => a + d.n, 0);
     return {
-      aheadPath: pos < last ? path(pos, last) : 'M0 0',
+      waiting: !st.joined, ended: st.ended,
+      aheadPath: upcoming.length ? path(pos, lastOpen) : 'M0 0',
       nextPath: next ? path(pos, next.at) : 'M0 0',
       marks: upcoming.map((d, i) => ({ x: route[d.at][0], y: route[d.at][1], ty: route[d.at][1] + 5, n: String(i + 1), fill: i === 0 ? '#E8A317' : '#3FA58A' })),
-      chips: upcoming.map((d, i) => ({ n: String(i + 1), short: d.short, payShort: d.payShort, fill: i === 0 ? '#E8A317' : '#3FA58A' })),
+      chips: upcoming.map((d, i) => ({ n: String(i + 1), short: d.short, payShort: d.payShort, fill: i === 0 ? '#E8A317' : '#3FA58A',
+        label: 'Arrêt ' + (i + 1) + ', ' + d.name + ', ' + people(d.n) + ', ' + d.pay + '. Toucher pour corriger.',
+        open: () => this.setState({ sheet: d.id }) })),
       taxiX: route[pos][0], taxiY: route[pos][1],
-      next: next ? { name: next.name, people: next.people, pay: next.pay, dist: dist >= 1000 ? (dist / 1000).toFixed(1).replace('.', ',') + ' km' : dist + ' m' } : { name: '', people: '', pay: '', dist: '' },
-      popup: !!next && next.at - pos <= 2 && next.at > pos,
-      hasNext: !!next, done: !next,
-      seatsLabel: onboard + ' passagers à bord sur 6',
-      cashTotal: doneDrops.reduce((a, d) => a + d.cash, 0) + ' Dh',
-      cardTotal: doneDrops.reduce((a, d) => a + d.card, 0) + ' Dh',
-      advanceLabel: next ? 'Avancer le taxi' : 'Nouveau trajet',
-      advance: () => this.setState({ pos: next ? Math.min(pos + 1, last) : 0 }),
+      next: next ? { name: next.name, people: people(next.n), pay: next.pay, dist: dist >= 1000 ? (dist / 1000).toFixed(1).replace('.', ',') + ' km' : dist + ' m' } : { name: '', people: '', pay: '', dist: '' },
+      popup: st.joined && !st.ended && !sheetDrop && !!next && next.at - pos <= 2,
+      hasNext: !!next, allClear: !next, offline: this.props.reseau === 'hors-ligne',
+      seatsLabel: people(onboard) + ' à bord sur 6',
+      mainLabel: next ? 'Déposé · ' + next.short : 'Fin du trajet',
+      mainAction: () => next ? setStatus(next.id, 'done') : this.setState({ ended: true }),
+      sheetOpen: !!sheetDrop,
+      sheet: sheetDrop
+        ? { name: sheetDrop.name, people: people(sheetDrop.n), pay: sheetDrop.pay, mixed: !!sheetDrop.mixed, n: String(upcoming.indexOf(sheetDrop) + 1), fill: upcoming[0] === sheetDrop ? '#E8A317' : '#3FA58A' }
+        : { name: '', people: '', pay: '', mixed: false, n: '', fill: '#3FA58A' },
+      dropNow: () => sheetDrop && setStatus(sheetDrop.id, 'done'),
+      removeStop: () => sheetDrop && setStatus(sheetDrop.id, 'removed'),
+      closeSheet: () => this.setState({ sheet: null }),
+      cashTotal: sum('cash'), cardTotal: sum('card'),
+      droppedLabel: dropped === 1 ? '1 passager déposé' : dropped + ' passagers déposés',
+      join: () => this.setState({ joined: true }),
+      advance: () => this.setState({ pos: Math.min(pos + 1, route.length - 1) }),
+      newTrip: () => this.setState({ joined: false, pos: 0, status: {}, sheet: null, ended: false }),
       voicePressed: v ? 'true' : 'false', voiceBg: v ? '#3FA58A' : 'transparent', voiceInk: v ? '#0D1513' : '#3FA58A',
       toggleVoice: () => this.setState({ voice: !v })
     };
