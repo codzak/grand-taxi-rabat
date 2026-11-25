@@ -16,7 +16,7 @@ a{color:#0E5A4A;text-decoration:none}a:hover{color:#0A4236}
 </helmet>
 <div style="width: 390px; height: 844px; display: flex; flex-direction: column; background: #FFFFFF; font-family: 'IBM Plex Sans', system-ui, sans-serif; color: #12201C; overflow: hidden">
 <div style="display: flex; align-items: center; gap: 12px; padding: 16px 16px 8px">
-<a href="Station.dc.html" aria-label="Retour" style="width: 44px; height: 44px; border-radius: 22px; background: #F3F6F4; display: flex; align-items: center; justify-content: center">
+<a href="Station.dc.html" aria-label="Retour" style="width: 48px; height: 48px; border-radius: 24px; background: #F3F6F4; display: flex; align-items: center; justify-content: center">
 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#12201C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"></path></svg>
 </a>
 <h1 style="margin: 0; font-family: 'Poppins', sans-serif; font-weight: 700; font-size: 20px">Signaler une erreur</h1>
@@ -25,26 +25,26 @@ a{color:#0E5A4A;text-decoration:none}a:hover{color:#0A4236}
 <sc-if value="{{isForm}}" hint-placeholder-val="{{ true }}">
 <form style="flex: 1; overflow-y: auto; padding: 8px 20px 20px; display: flex; flex-direction: column; gap: 18px">
 <p style="margin: 0; font-size: 15px; color: #5B6B66">Station : Mini Parc, Youssoufia. Votre message nous aide à garder la carte juste.</p>
-<fieldset style="border: 0; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px">
+<fieldset aria-describedby="typeMsg" style="border: 0; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px">
 <legend style="font-weight: 600; font-size: 15px; margin-bottom: 8px">Qu'est-ce qui ne va pas ? (obligatoire)</legend>
+<sc-if value="{{isError}}" hint-placeholder-val="{{ false }}">
+<span id="typeMsg" role="alert" style="font-size: 14px; color: #B42318">Choisissez une réponse ci-dessous pour envoyer.</span>
+</sc-if>
 <sc-for list="{{types}}" as="t" hint-placeholder-count="5">
-<label style="display: flex; align-items: center; gap: 10px; min-height: 44px; padding: 0 12px; border: 1px solid #E3E8E5; border-radius: 12px; font-size: 15px">
+<label style="display: flex; align-items: center; gap: 10px; min-height: 48px; padding: 0 12px; border: 1px solid {{t.border}}; border-radius: 12px; font-size: 15px">
 <input type="radio" name="type" value="{{t.v}}" style="width: 20px; height: 20px; accent-color: #0E5A4A">{{t.label}}
 </label>
 </sc-for>
 </fieldset>
 <div style="display: flex; flex-direction: column; gap: 6px">
 <label for="msg" style="font-weight: 600; font-size: 15px">Détail (facultatif, 300 caractères max)</label>
-<textarea id="msg" rows="4" maxlength="300" placeholder="Ex. : le prix est passé à 6 Dh" style="border: 1px solid {{msgBorder}}; border-radius: 12px; padding: 12px; font-family: inherit; font-size: 15px; resize: none"></textarea>
-<sc-if value="{{isError}}" hint-placeholder-val="{{ false }}">
-<span role="alert" style="font-size: 14px; color: #B42318">Choisissez le type d'erreur avant d'envoyer.</span>
-</sc-if>
+<textarea id="msg" rows="4" maxlength="300" placeholder="Ex. : le prix est passé à 6 Dh" style="border: 1px solid #D5DBD8; border-radius: 12px; padding: 12px; font-family: inherit; font-size: 15px; resize: none"></textarea>
 </div>
-<label style="display: flex; gap: 10px; align-items: flex-start; font-size: 14px; color: #3D4A46">
+<label style="display: flex; gap: 10px; align-items: flex-start; min-height: 48px; padding: 12px 0; box-sizing: border-box; font-size: 14px; color: #3D4A46">
 <input type="checkbox" style="width: 20px; height: 20px; margin-top: 1px; accent-color: #0E5A4A">Joindre ma position actuelle (envoyée une seule fois, jamais gardée avec mon identité)
 </label>
 <p style="margin: 0; font-size: 13px; color: #5B6B66">Aucun compte, aucun nom, aucun numéro demandé.</p>
-<button type="button" onClick="{{send}}" style="height: 52px; border-radius: 26px; border: 0; background: {{btnBg}}; color: #FFFFFF; font-family: inherit; font-weight: 600; font-size: 16px">{{btnLabel}}</button>
+<button type="button" onClick="{{send}}" aria-busy="{{busy}}" style="height: 52px; border-radius: 26px; border: 0; background: {{btnBg}}; color: #FFFFFF; font-family: inherit; font-weight: 600; font-size: 16px">{{btnLabel}}</button>
 </form>
 </sc-if>
 
@@ -55,7 +55,7 @@ a{color:#0E5A4A;text-decoration:none}a:hover{color:#0A4236}
 </span>
 <h2 style="margin: 0; font-family: 'Poppins', sans-serif; font-size: 20px">Merci, c'est envoyé</h2>
 <p style="margin: 0; font-size: 15px; color: #5B6B66">L'équipe vérifie sur place avant de modifier la carte.</p>
-<a href="Main.dc.html" style="font-weight: 600; font-size: 16px; padding: 12px">Retour à la carte</a>
+<a href="Main.dc.html" style="min-height: 48px; display: flex; align-items: center; font-weight: 600; font-size: 16px; padding: 0 16px">Retour à la carte</a>
 </div>
 </sc-if>
 
@@ -63,7 +63,7 @@ a{color:#0E5A4A;text-decoration:none}a:hover{color:#0A4236}
 <div style="flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; padding: 24px; text-align: center">
 <h2 style="margin: 0; font-family: 'Poppins', sans-serif; font-size: 20px">Pas de connexion</h2>
 <p style="margin: 0; font-size: 15px; color: #5B6B66">Votre signalement est gardé sur le téléphone et partira tout seul dès que le réseau revient.</p>
-<a href="Main.dc.html" style="font-weight: 600; font-size: 16px; padding: 12px">Retour à la carte</a>
+<a href="Main.dc.html" style="min-height: 48px; display: flex; align-items: center; font-weight: 600; font-size: 16px; padding: 0 16px">Retour à la carte</a>
 </div>
 </sc-if>
 </div>
@@ -81,10 +81,10 @@ class Component extends DCLogic {
         { v: 'destination', label: 'Destination fausse ou manquante' },
         { v: 'prix', label: 'Prix ou horaires faux' },
         { v: 'autre', label: 'Autre' }
-      ],
+      ].map((t) => ({ ...t, border: etat === 'erreur' ? '#B42318' : '#E3E8E5' })),
       isForm, isError: etat === 'erreur', isSuccess: etat === 'succes', isOffline: etat === 'hors-ligne',
-      msgBorder: etat === 'erreur' ? '#B42318' : '#D5DBD8',
-      btnBg: etat === 'envoi' ? '#5B8F82' : '#0E5A4A',
+      btnBg: '#0E5A4A', // sending is shown by the label, not a faded colour (kept contrast above 4.5:1)
+      busy: etat === 'envoi' ? 'true' : 'false',
       btnLabel: etat === 'envoi' ? 'Envoi en cours…' : 'Envoyer',
       send: () => this.setState({ local: 'succes' })
     };
