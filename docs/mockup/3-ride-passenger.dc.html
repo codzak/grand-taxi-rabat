@@ -39,14 +39,12 @@ a{color:#0E5A4A;text-decoration:none}a:hover{color:#0A4236}
 
 <sc-if value="{{pinMode}}" hint-placeholder-val="{{ false }}">
 <sc-for list="{{snaps}}" as="p" hint-placeholder-count="12">
-<button type="button" onClick="{{p.pick}}" aria-label="{{p.label}}" style="{{p.pos}}">
-<span style="display: block; width: 14px; height: 14px; border-radius: 7px; background: #E8A317; border: 2px solid #FFFFFF; box-shadow: 0 1px 4px rgba(18,32,28,0.3)"></span>
-</button>
+<span aria-hidden="true" style="{{p.pos}}"></span>
 </sc-for>
 </sc-if>
 
 <div style="position: absolute; left: 16px; right: 16px; top: 20px; background: #FFFFFF; border-radius: 16px; padding: 12px 16px; box-shadow: 0 2px 10px rgba(18,32,28,0.12); display: flex; align-items: center; gap: 12px">
-<a href="Station.dc.html" aria-label="Quitter le mode trajet" style="width: 44px; height: 44px; border-radius: 22px; background: #F3F6F4; display: flex; align-items: center; justify-content: center; flex: none">
+<a href="Station.dc.html" aria-label="Quitter le mode trajet" style="width: 48px; height: 48px; border-radius: 24px; background: #F3F6F4; display: flex; align-items: center; justify-content: center; flex: none">
 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#12201C" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg>
 </a>
 <div style="flex: 1; display: flex; flex-direction: column; gap: 2px">
@@ -54,7 +52,10 @@ a{color:#0E5A4A;text-decoration:none}a:hover{color:#0A4236}
 <span style="font-size: 14px; color: #5B6B66">Jusqu'à votre arrêt : {{toGo}}</span>
 </div>
 <sc-if value="{{shared}}" hint-placeholder-val="{{ false }}">
-<span style="font-size: 12px; font-weight: 600; background: #E6F0ED; color: #0E5A4A; padding: 4px 8px; border-radius: 8px">Partagé · {{payLabel}}</span>
+<span style="font-size: 13px; font-weight: 600; background: #E6F0ED; color: #0E5A4A; padding: 4px 8px; border-radius: 8px">Partagé · {{payLabel}}</span>
+</sc-if>
+<sc-if value="{{queued}}" hint-placeholder-val="{{ false }}">
+<span style="font-size: 13px; font-weight: 600; background: #EEF0EF; color: #3D4A46; padding: 4px 8px; border-radius: 8px">En attente du réseau</span>
 </sc-if>
 </div>
 
@@ -65,7 +66,7 @@ a{color:#0E5A4A;text-decoration:none}a:hover{color:#0A4236}
 </div>
 </sc-if>
 
-<div style="position: absolute; left: 0; right: 0; bottom: 7px; height: 360px; background: #FFFFFF; border-radius: 24px 24px 0 0; box-shadow: 0 -4px 20px rgba(18,32,28,0.12); padding: 18px 20px 16px; box-sizing: border-box; display: flex; flex-direction: column; gap: 12px">
+<div style="position: absolute; left: 0; right: 0; bottom: 7px; height: {{sheetH}}; background: #FFFFFF; border-radius: 24px 24px 0 0; box-shadow: 0 -4px 20px rgba(18,32,28,0.12); padding: 18px 20px 16px; box-sizing: border-box; display: flex; flex-direction: column; gap: 12px">
 
 <sc-if value="{{viewMode}}" hint-placeholder-val="{{ true }}">
 <div style="display: flex; flex-direction: column; gap: 12px; flex: 1; min-height: 0">
@@ -75,7 +76,7 @@ a{color:#0E5A4A;text-decoration:none}a:hover{color:#0A4236}
 </div>
 <div style="display: flex; flex-direction: column; gap: 4px; flex: 1; overflow-y: auto">
 <sc-for list="{{rows}}" as="s" hint-placeholder-count="5">
-<button type="button" onClick="{{s.pick}}" aria-pressed="{{s.pressed}}" style="display: flex; align-items: center; gap: 12px; min-height: 44px; padding: 6px 12px; border-radius: 12px; font-family: inherit; text-align: left; color: #12201C; {{s.style}}">
+<button type="button" onClick="{{s.pick}}" aria-pressed="{{s.pressed}}" style="display: flex; align-items: center; gap: 12px; min-height: 48px; padding: 6px 12px; border-radius: 12px; font-family: inherit; text-align: left; color: #12201C; {{s.style}}">
 <span style="width: 14px; height: 14px; border-radius: 7px; flex: none; {{s.dot}}"></span>
 <span style="flex: 1; font-size: 15px; {{s.textStyle}}">{{s.name}}</span>
 <span style="font-size: 13px; color: #5B6B66">{{s.tag}}</span>
@@ -90,6 +91,9 @@ a{color:#0E5A4A;text-decoration:none}a:hover{color:#0A4236}
 <sc-if value="{{shared}}" hint-placeholder-val="{{ false }}">
 <button type="button" onClick="{{stopShare}}" style="flex: 1; height: 48px; border-radius: 24px; border: 1px solid #D5DBD8; background: #FFFFFF; color: #12201C; font-family: inherit; font-weight: 600; font-size: 14px">Arrêter le partage</button>
 </sc-if>
+<sc-if value="{{queued}}" hint-placeholder-val="{{ false }}">
+<button type="button" onClick="{{confirmShare}}" style="flex: 1; height: 48px; border-radius: 24px; border: 0; background: {{brand}}; color: #FFFFFF; font-family: inherit; font-weight: 600; font-size: 14px">Réessayer l'envoi</button>
+</sc-if>
 </div>
 <button type="button" onClick="{{advance}}" style="height: 36px; border: 0; background: transparent; color: #5B6B66; font-family: inherit; font-size: 13px; text-decoration: underline">Démo : faire avancer le taxi</button>
 </div>
@@ -98,38 +102,119 @@ a{color:#0E5A4A;text-decoration:none}a:hover{color:#0A4236}
 <sc-if value="{{pinMode}}" hint-placeholder-val="{{ false }}">
 <div style="display: flex; flex-direction: column; gap: 12px">
 <h1 style="margin: 0; font-family: 'Poppins', sans-serif; font-weight: 700; font-size: 20px">Posez votre arrêt</h1>
-<p style="margin: 0; font-size: 15px; color: #3D4A46">Touchez un point orange sur la ligne. Le grand taxi peut s'arrêter n'importe où sur son trajet, alors votre arrêt est accroché à la ligne.</p>
-<button type="button" onClick="{{cancelPin}}" style="height: 48px; border-radius: 24px; border: 1px solid #D5DBD8; background: #FFFFFF; font-family: inherit; font-weight: 600; font-size: 15px; color: #12201C">Annuler</button>
+<p style="margin: 0; font-size: 15px; color: #3D4A46">Avancez ou reculez l'épingle : elle reste sur la ligne du taxi.</p>
+<div aria-live="polite" style="display: flex; flex-direction: column; gap: 2px; padding: 10px 14px; border: 2px solid #E8A317; background: #FFF8EA; border-radius: 16px">
+<span style="font-weight: 600; font-size: 16px">{{draftName}}</span>
+<span style="font-size: 14px; color: #5B6B66">À {{draftDist}} du taxi</span>
+</div>
+<div style="display: flex; gap: 8px">
+<button type="button" onClick="{{pinBack}}" aria-disabled="{{atFirst}}" style="flex: 1; height: 56px; border-radius: 28px; border: 2px solid {{brand}}; background: #FFFFFF; color: {{brand}}; display: flex; align-items: center; justify-content: center; gap: 8px; font-family: inherit; font-weight: 600; font-size: 15px; opacity: {{backOpacity}}">
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"></path></svg>
+Plus tôt
+</button>
+<button type="button" onClick="{{pinFwd}}" aria-disabled="{{atLast}}" style="flex: 1; height: 56px; border-radius: 28px; border: 2px solid {{brand}}; background: #FFFFFF; color: {{brand}}; display: flex; align-items: center; justify-content: center; gap: 8px; font-family: inherit; font-weight: 600; font-size: 15px; opacity: {{fwdOpacity}}">
+Plus loin
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"></path></svg>
+</button>
+</div>
+<div style="display: flex; gap: 8px">
+<button type="button" onClick="{{cancelPin}}" style="flex: 1; height: 48px; border-radius: 24px; border: 1px solid #D5DBD8; background: #FFFFFF; font-family: inherit; font-weight: 600; font-size: 15px; color: #12201C">Annuler</button>
+<button type="button" onClick="{{confirmPin}}" style="flex: 1; height: 48px; border-radius: 24px; border: 0; background: {{brand}}; color: #FFFFFF; font-family: inherit; font-weight: 600; font-size: 15px">Valider cet arrêt</button>
+</div>
 </div>
 </sc-if>
 
 <sc-if value="{{codeMode}}" hint-placeholder-val="{{ false }}">
 <div style="display: flex; flex-direction: column; gap: 10px; flex: 1; min-height: 0; overflow-y: auto">
 <h1 style="margin: 0; font-family: 'Poppins', sans-serif; font-weight: 700; font-size: 20px">Dire mon arrêt au chauffeur</h1>
-<label for="code" style="font-size: 15px; color: #3D4A46">Code affiché dans le taxi (ou scannez le QR)</label>
-<input id="code" inputmode="numeric" maxlength="4" value="4827" style="height: 52px; border: 1px solid #D5DBD8; border-radius: 12px; padding: 0 16px; font-family: inherit; font-size: 24px; letter-spacing: 8px">
+<div style="display: flex; flex-direction: column; gap: 6px">
+<label for="code" style="font-size: 15px; color: #3D4A46">Code affiché dans le taxi</label>
+<div style="display: flex; gap: 8px">
+<input id="code" inputmode="numeric" maxlength="4" value="4827" aria-invalid="{{codeInvalid}}" aria-describedby="codeMsg" style="flex: 1; min-width: 0; height: 52px; border: {{codeBorder}}; border-radius: 12px; padding: 0 16px; font-family: inherit; font-size: 24px; letter-spacing: 8px">
+<button type="button" onClick="{{scanQr}}" style="flex: none; height: 52px; padding: 0 16px; border-radius: 26px; border: 2px solid {{brand}}; background: #FFFFFF; color: {{brand}}; display: flex; align-items: center; gap: 8px; font-family: inherit; font-weight: 600; font-size: 15px">
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"></rect><rect x="14" y="3" width="7" height="7" rx="1"></rect><rect x="3" y="14" width="7" height="7" rx="1"></rect><path d="M14 14h3v3M21 14v.01M14 21h3M21 17v4"></path></svg>
+Scanner
+</button>
+</div>
+<sc-if value="{{hasCodeError}}" hint-placeholder-val="{{ false }}">
+<span id="codeMsg" role="alert" style="font-size: 14px; color: #B42318">{{codeError}}</span>
+</sc-if>
+</div>
+<div style="display: flex; align-items: center; justify-content: space-between; gap: 12px">
+<span id="seatsLabel" style="font-size: 15px; color: #3D4A46">Nombre de places</span>
+<div role="group" aria-labelledby="seatsLabel" style="display: flex; align-items: center; gap: 4px">
+<button type="button" onClick="{{lessSeats}}" aria-label="Une place de moins" aria-disabled="{{minSeats}}" style="width: 48px; height: 48px; border-radius: 24px; border: 1px solid #D5DBD8; background: #FFFFFF; display: flex; align-items: center; justify-content: center; opacity: {{lessOpacity}}">
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#12201C" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M5 12h14"></path></svg>
+</button>
+<span aria-live="polite" style="min-width: 32px; text-align: center; font-weight: 600; font-size: 20px">{{seats}}</span>
+<button type="button" onClick="{{moreSeats}}" aria-label="Une place de plus" aria-disabled="{{maxSeats}}" style="width: 48px; height: 48px; border-radius: 24px; border: 1px solid #D5DBD8; background: #FFFFFF; display: flex; align-items: center; justify-content: center; opacity: {{moreOpacity}}">
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#12201C" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>
+</button>
+</div>
+</div>
 <fieldset style="border: 0; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px">
-<legend style="font-size: 15px; color: #3D4A46; margin-bottom: 8px">Je paie 5 Dh</legend>
+<legend style="font-size: 15px; color: #3D4A46; margin-bottom: 8px">Je paie {{total}}</legend>
 <div style="display: flex; gap: 8px">
 <sc-for list="{{pays}}" as="p" hint-placeholder-count="2">
-<button type="button" onClick="{{p.pick}}" aria-pressed="{{p.pressed}}" style="flex: 1; height: 44px; border-radius: 22px; font-family: inherit; font-weight: 600; font-size: 15px; {{p.style}}">{{p.label}}</button>
+<button type="button" onClick="{{p.pick}}" aria-pressed="{{p.pressed}}" style="flex: 1; height: 48px; border-radius: 24px; font-family: inherit; font-weight: 600; font-size: 15px; {{p.style}}">{{p.label}}</button>
 </sc-for>
 </div>
 </fieldset>
-<p style="margin: 0; font-size: 13px; color: #5B6B66">Le chauffeur voit votre arrêt et votre mode de paiement, pas votre nom ni votre numéro. Tout est effacé à la fin du trajet.</p>
+<p style="margin: 0; font-size: 13px; color: #5B6B66">Le chauffeur voit votre arrêt, le nombre de places et le mode de paiement, pas votre nom ni votre numéro. Tout est effacé à la fin du trajet.</p>
 <div style="display: flex; gap: 8px">
 <button type="button" onClick="{{cancelCode}}" style="flex: 1; height: 48px; border-radius: 24px; border: 1px solid #D5DBD8; background: #FFFFFF; font-family: inherit; font-weight: 600; font-size: 15px; color: #12201C">Annuler</button>
-<button type="button" onClick="{{confirmShare}}" style="flex: 1; height: 48px; border-radius: 24px; border: 0; background: {{brand}}; color: #FFFFFF; font-family: inherit; font-weight: 600; font-size: 15px">Partager</button>
+<button type="button" onClick="{{confirmShare}}" aria-disabled="{{sending}}" aria-busy="{{sending}}" style="flex: 1; height: 48px; border-radius: 24px; border: 0; background: {{brand}}; color: #FFFFFF; font-family: inherit; font-weight: 600; font-size: 15px">{{shareLabel}}</button>
 </div>
+</div>
+</sc-if>
+
+<sc-if value="{{resultMode}}" hint-placeholder-val="{{ false }}">
+<div role="status" style="display: flex; flex-direction: column; gap: 12px; flex: 1; min-height: 0">
+<div style="display: flex; align-items: center; gap: 12px">
+<span style="flex: none; width: 48px; height: 48px; border-radius: 24px; background: {{resultBg}}; display: flex; align-items: center; justify-content: center">
+<sc-if value="{{sent}}" hint-placeholder-val="{{ true }}">
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#0E5A4A" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"></path></svg>
+</sc-if>
+<sc-if value="{{queued}}" hint-placeholder-val="{{ false }}">
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#3D4A46" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 8.8a15 15 0 0120 0"></path><path d="M5 12.5a10 10 0 0114 0"></path><path d="M8.5 16.4a5 5 0 017 0"></path><path d="M12 20h.01"></path><path d="M3 3l18 18"></path></svg>
+</sc-if>
+</span>
+<h1 style="margin: 0; font-family: 'Poppins', sans-serif; font-weight: 700; font-size: 20px">{{resultTitle}}</h1>
+</div>
+<p style="margin: 0; font-size: 15px; color: #3D4A46">{{resultText}}</p>
+<div style="display: flex; flex-direction: column; gap: 4px; padding: 12px 14px; border: 1px solid #E3E8E5; border-radius: 16px">
+<span style="font-weight: 600; font-size: 17px">{{myStopName}}</span>
+<span style="font-size: 14px; color: #5B6B66">{{seatsText}} · {{payLabel}} {{total}}</span>
+</div>
+<div style="display: flex; gap: 8px; margin-top: auto">
+<sc-if value="{{queued}}" hint-placeholder-val="{{ false }}">
+<button type="button" onClick="{{confirmShare}}" style="flex: 1; height: 48px; border-radius: 24px; border: 2px solid {{brand}}; background: #FFFFFF; color: {{brand}}; font-family: inherit; font-weight: 600; font-size: 15px">Réessayer</button>
+</sc-if>
+<button type="button" onClick="{{backToRide}}" style="flex: 1; height: 48px; border-radius: 24px; border: 0; background: {{brand}}; color: #FFFFFF; font-family: inherit; font-weight: 600; font-size: 15px">Retour au trajet</button>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{endMode}}" hint-placeholder-val="{{ false }}">
+<div role="status" style="display: flex; flex-direction: column; gap: 12px; flex: 1; min-height: 0">
+<div style="display: flex; align-items: center; gap: 12px">
+<span style="flex: none; width: 48px; height: 48px; border-radius: 24px; background: #E6F0ED; display: flex; align-items: center; justify-content: center">
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#0E5A4A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s7-6.5 7-12a7 7 0 00-14 0c0 5.5 7 12 7 12z"></path><circle cx="12" cy="9" r="2.5"></circle></svg>
+</span>
+<h1 style="margin: 0; font-family: 'Poppins', sans-serif; font-weight: 700; font-size: 20px">Vous êtes arrivé</h1>
+</div>
+<p style="margin: 0; font-size: 15px; color: #3D4A46">{{myStopName}}. Trajet terminé : votre arrêt n'est plus partagé et votre position n'est pas gardée.</p>
+<a href="Main.dc.html" style="margin-top: auto; height: 48px; border-radius: 24px; background: {{brand}}; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 15px">Retour à la carte</a>
+<button type="button" onClick="{{restart}}" style="height: 36px; border: 0; background: transparent; color: #5B6B66; font-family: inherit; font-size: 13px; text-decoration: underline">Démo : recommencer le trajet</button>
 </div>
 </sc-if>
 
 </div>
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"brand":{"editor":"color","default":"#0E5A4A","options":["#0E5A4A","#1F4E8C","#7A3E12"]},"$preview":{"width":390,"height":844}}'>
+<script type="text/x-dc" data-dc-script data-props='{"brand":{"editor":"color","default":"#0E5A4A","options":["#0E5A4A","#1F4E8C","#7A3E12"]},"partage":{"editor":"enum","options":["ok","code-faux","code-expire","hors-ligne"],"default":"ok"},"$preview":{"width":390,"height":844}}'>
 class Component extends DCLogic {
-  constructor(props) { super(props); this.state = { step: 0, mine: 12, custom: false, mode: 'view', shared: false, pay: 'Espèces' }; }
+  constructor(props) { super(props); this.state = { step: 0, mine: 12, custom: false, mode: 'view', shared: false, pay: 'Espèces', seats: 1, share: 'idle', err: '' }; }
   renderVals() {
     const brand = this.props.brand ?? '#0E5A4A';
     const v = [[90, 470], [140, 320], [230, 300], [285, 180], [300, 60]];
@@ -160,15 +245,14 @@ class Component extends DCLogic {
         dot: r.custom ? 'background: #E8A317' : (passed ? 'background: #9AA7A2' : 'background: #FFFFFF; border: 3px solid ' + brand + '; box-sizing: border-box'),
         textStyle: passed ? 'color: #5B6B66' : 'font-weight: 500' };
     });
-    const snaps = [];
-    pts.forEach((p, i) => {
-      if (i > 0 && i % 4 !== 0) {
-        snaps.push({ label: 'Poser mon arrêt ici, point ' + i,
-          pos: 'position: absolute; left: ' + (p[0] - 15) + 'px; top: ' + (p[1] - 15) + 'px; width: 30px; height: 30px; padding: 8px; border: 0; background: transparent; cursor: pointer',
-          pick: () => this.setState({ mine: i, custom: true, mode: 'view' }) });
-      }
-    });
-    const pinP = pts[st.mine];
+    // Pin mode: the pin moves one step along the line with two big buttons, no tiny targets to hit in a moving taxi
+    const LAST = pts.length - 1;
+    const firstFree = Math.min(st.step + 1, LAST);
+    const draft = Math.min(LAST, Math.max(firstFree, st.draft ?? st.mine));
+    const snaps = pts.map((p, i) => ({
+      pos: 'position: absolute; left: ' + (p[0] - 5) + 'px; top: ' + (p[1] - 5) + 'px; width: 10px; height: 10px; border-radius: 5px; background: ' + (i < firstFree ? '#9AA7A2' : '#E8A317') + '; border: 2px solid #FFFFFF; box-sizing: border-box' }));
+    const stopName = (i) => i % 4 === 0 ? names[i / 4] : 'Entre ' + names[Math.floor(i / 4)] + ' et ' + names[Math.ceil(i / 4)];
+    const pinP = pts[st.mode === 'pin' ? draft : st.mine];
     const me = pts[Math.min(st.step, 16)];
     const from = Math.min(st.step, st.mine);
     const seg = pts.slice(from, st.mine + 1);
@@ -178,19 +262,66 @@ class Component extends DCLogic {
     const pays = ['Espèces', 'Carte'].map((l) => ({ label: l, pressed: st.pay === l ? 'true' : 'false',
       pick: () => this.setState({ pay: l }),
       style: st.pay === l ? 'border: 0; background: ' + brand + '; color: #FFFFFF' : 'border: 1px solid #D5DBD8; background: #FFFFFF; color: #12201C' }));
+    const PRICE = 5; // Dh per seat on this line (example data)
+    const total = (st.seats * PRICE) + ' Dh';
+    const arrived = st.step > 0 && st.step >= st.mine;
+    const mineRow = list.find((r) => r.idx === st.mine && r.custom === st.custom);
+    // Demo: the "partage" prop picks what the server answers, so every state can be previewed
+    const outcome = this.props.partage ?? 'ok';
+    const errors = {
+      'code-faux': 'Ce code ne correspond à aucun taxi en route. Vérifiez les 4 chiffres affichés dans le taxi.',
+      'code-expire': 'Ce code a expiré (plus de 2 heures). Demandez le nouveau code au chauffeur.'
+    };
+    const confirmShare = () => {
+      if (st.share === 'sending') return;
+      this.setState({ share: 'sending', err: '' });
+      setTimeout(() => {
+        if (errors[outcome]) this.setState({ share: 'error', err: errors[outcome], mode: 'code' });
+        else if (outcome === 'hors-ligne') this.setState({ share: 'queued', mode: 'result' });
+        else this.setState({ share: 'sent', shared: true, mode: 'result' });
+      }, 900);
+    };
+    const sent = st.share === 'sent';
+    const queued = st.share === 'queued';
     return { brand, named, rows, snaps, myPath, toGo, pays, payLabel: st.pay,
       meX: me[0], meY: me[1],
-      showPin: st.custom,
+      showPin: st.custom || st.mode === 'pin',
+      sheetH: st.mode === 'pin' ? '340px' : (st.mode === 'code' ? '470px' : '360px'),
+      draftName: stopName(draft),
+      draftDist: ((draft - st.step) * 160 >= 1000 ? ((draft - st.step) * 0.16).toFixed(1).replace('.', ',') + ' km' : (draft - st.step) * 160 + ' m'),
+      atFirst: draft <= firstFree ? 'true' : 'false', atLast: draft >= LAST ? 'true' : 'false',
+      backOpacity: draft <= firstFree ? '0.4' : '1', fwdOpacity: draft >= LAST ? '0.4' : '1',
+      pinBack: () => this.setState({ draft: Math.max(firstFree, draft - 1) }),
+      pinFwd: () => this.setState({ draft: Math.min(LAST, draft + 1) }),
+      confirmPin: () => this.setState({ mine: draft, custom: draft % 4 !== 0, mode: 'view', draft: null }),
       pinPos: 'position: absolute; left: ' + (pinP[0] - 16) + 'px; top: ' + (pinP[1] - 38) + 'px',
       alert: st.step < st.mine && st.mine - st.step <= 3,
-      viewMode: st.mode === 'view', pinMode: st.mode === 'pin', codeMode: st.mode === 'code',
-      shared: st.shared, notShared: !st.shared,
-      startPin: () => this.setState({ mode: 'pin' }),
-      cancelPin: () => this.setState({ mode: 'view' }),
+      viewMode: !arrived && st.mode === 'view', pinMode: !arrived && st.mode === 'pin',
+      codeMode: !arrived && st.mode === 'code', resultMode: !arrived && st.mode === 'result', endMode: arrived,
+      shared: st.shared, notShared: !st.shared && !queued, queued, sent,
+      seats: st.seats, total, seatsText: st.seats === 1 ? '1 place' : st.seats + ' places',
+      minSeats: st.seats <= 1 ? 'true' : 'false', maxSeats: st.seats >= 6 ? 'true' : 'false',
+      lessOpacity: st.seats <= 1 ? '0.4' : '1', moreOpacity: st.seats >= 6 ? '0.4' : '1',
+      lessSeats: () => this.setState({ seats: Math.max(1, st.seats - 1) }),
+      moreSeats: () => this.setState({ seats: Math.min(6, st.seats + 1) }),
+      hasCodeError: !!st.err, codeError: st.err, codeInvalid: st.err ? 'true' : 'false',
+      codeBorder: st.err ? '2px solid #B42318' : '1px solid #D5DBD8',
+      sending: st.share === 'sending' ? 'true' : 'false', shareLabel: st.share === 'sending' ? 'Envoi en cours…' : 'Partager',
+      myStopName: mineRow ? mineRow.name : '',
+      resultBg: sent ? '#E6F0ED' : '#EEF0EF',
+      resultTitle: sent ? 'C\'est envoyé au chauffeur' : 'Pas de réseau pour l\'instant',
+      resultText: sent
+        ? 'Le chauffeur voit votre arrêt sur sa carte. Vous recevrez une alerte avant de descendre.'
+        : 'Votre arrêt est gardé sur le téléphone et partira tout seul dès que le réseau revient. En attendant, dites-le au chauffeur à voix haute.',
+      scanQr: () => this.setState({ err: '' }),
+      startPin: () => this.setState({ mode: 'pin', draft: st.mine }),
+      cancelPin: () => this.setState({ mode: 'view', draft: null }),
       openCode: () => this.setState({ mode: 'code' }),
-      cancelCode: () => this.setState({ mode: 'view' }),
-      confirmShare: () => this.setState({ mode: 'view', shared: true }),
-      stopShare: () => this.setState({ shared: false }),
+      cancelCode: () => this.setState({ mode: 'view', err: '', share: st.share === 'error' ? 'idle' : st.share }),
+      confirmShare,
+      backToRide: () => this.setState({ mode: 'view' }),
+      stopShare: () => this.setState({ shared: false, share: 'idle' }),
+      restart: () => this.setState({ step: 0, mode: 'view', shared: false, share: 'idle', err: '' }),
       advance: () => this.setState({ step: st.step >= 16 ? 0 : st.step + 2 }) };
   }
 }
